@@ -5,15 +5,17 @@ on:
     - cron: "0 21 * * *"
   push:
     branches: [main]
-
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - name: notion-jam
         uses: dimasma0305/notion-jam@v1.0.0
         with:
@@ -29,9 +31,4 @@ jobs:
           DOWNLOAD_IMAGE_TIMEOUT: 30
           SKIP_DOWNLOADED_IMAGES: true
           DOWNLOAD_FRONTMATTER_IMAGES: true
-      - name: Save changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Commit changes
-          github_token: ${{ secrets.PERSONAL_TOKEN }}
-          tagging_message: "main"
+      - uses: stefanzweifel/git-auto-commit-action@v5
