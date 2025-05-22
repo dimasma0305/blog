@@ -1,4 +1,5 @@
 # This is a basic workflow to help you get started with Actions
+
 name: NotionJAM
 
 # Controls when the workflow will run
@@ -22,20 +23,20 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
       - name: notion-jam
         uses: victornpb/notion-jam@v0.0.9
         with:
           NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
           NOTION_DATABASE: cc2cf42cf4b74db1901b8e28d3f67a06
-          ARTICLE_PATH: posts/{title}/index.md
-          ASSETS_PATH: '.'
-          PARALLEL_PAGES: 3
+          ARTICLE_PATH: content/posts/{title}/README.md
+          ASSETS_PATH: ./
+          PARALLEL_PAGES: 25
           PARALLEL_DOWNLOADS_PER_PAGE: 3
           DOWNLOAD_IMAGE_TIMEOUT: 30
           SKIP_DOWNLOADED_IMAGES: true
-     
-      - name: commit-changes
+          DOWNLOAD_FRONTMATTER_IMAGES: true
+      
+      - name: Save changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Sync changes
+          commit_message: Commit changes
