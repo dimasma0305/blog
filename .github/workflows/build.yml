@@ -27,7 +27,7 @@ jobs:
         uses: victornpb/notion-jam@v0.0.9
         with:
           NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
-          NOTION_DATABASE: https://www.notion.so/dimas0305/cc2cf42cf4b74db1901b8e28d3f67a06
+          NOTION_DATABASE: https://www.notion.so/cc2cf42cf4b74db1901b8e28d3f67a06
           ARTICLE_PATH: content/posts/{title}/README.md
           ASSETS_PATH: ./
           PARALLEL_PAGES: 25
