@@ -28,8 +28,8 @@ jobs:
         with:
           NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
           NOTION_DATABASE: cc2cf42cf4b74db1901b8e28d3f67a06
-          FILTER_PROP: Foobar
-          FILTER_VALUES: Done
+          FILTER_PROP: Status
+          FILTER_VALUES: Published
           CONVERT_PROP_CASE: snake
           ARTICLE_PATH: posts/{title}/README.md
           ASSETS_PATH: ./imgs
