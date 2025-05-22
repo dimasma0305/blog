@@ -2,7 +2,7 @@ name: NotionJAM
 
 on:
   schedule:
-    - cron: "0 21 * * *" # daily
+    - cron: "0 21 * * *"
   push:
     branches: [main]
 
