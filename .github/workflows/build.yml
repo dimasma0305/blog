@@ -24,12 +24,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - name: notion-jam
-        uses: victornpb/notion-jam@v0.0.13
+        uses: victornpb/notion-jam@v0.0.9
         with:
           NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
           NOTION_DATABASE: cc2cf42cf4b74db1901b8e28d3f67a06
           FILTER_PROP: Status
-          FILTER_VALUES: Done, In progress
+          FILTER_VALUES: Done
           CONVERT_PROP_CASE: snake
           ARTICLE_PATH: posts/{title}/README.md
           ASSETS_PATH: ./imgs
