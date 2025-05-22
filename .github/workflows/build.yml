@@ -35,3 +35,4 @@ jobs:
         with:
           commit_message: Commit changes
           github_token: ${{ secrets.PERSONAL_TOKEN }}
+          tagging_message: "Automated tag"
