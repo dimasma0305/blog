@@ -29,7 +29,6 @@ jobs:
           DOWNLOAD_IMAGE_TIMEOUT: 30
           SKIP_DOWNLOADED_IMAGES: true
           DOWNLOAD_FRONTMATTER_IMAGES: true
-      
       - name: Save changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
