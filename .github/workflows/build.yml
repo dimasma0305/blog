@@ -24,7 +24,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - name: notion-jam
-        uses: victornpb/notion-jam@v0.0.9
+        uses: victornpb/notion-jam@v0.0.10
         with:
           NOTION_SECRET: ${{ secrets.NOTION_SECRET }}
           NOTION_DATABASE: cc2cf42cf4b74db1901b8e28d3f67a06
