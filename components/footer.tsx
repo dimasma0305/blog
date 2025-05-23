@@ -50,7 +50,7 @@ export function Footer() {
                 <span>GitHub</span>
               </Link>
               <Link
-                href="https://twitter.com/dimasma___"
+                href="https://twitter.com/dimasma__"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground"

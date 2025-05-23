@@ -120,7 +120,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                         alt={post.owner.name}
                         fill
                         className="object-cover"
-                        fallbackSrc="/placeholder.svg?height=100&width=100&text=Avatar"
+                        fallbackSrc="https://avatars.githubusercontent.com/u/92920739"
                       />
                     </div>
                   )}
@@ -141,10 +141,10 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
           </div>
 
           <div className="flex flex-wrap items-center gap-4 mb-8">
-            <ShareButtons title={post.title} slug={post.slug} />
             {post.notionUrl && (
               <NotionLinkButton notionUrl={post.notionUrl} />
             )}
+            <ShareButtons title={post.title} slug={post.slug} />
           </div>
         </div>
 

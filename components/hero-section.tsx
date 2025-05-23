@@ -62,9 +62,9 @@ export function HeroSection() {
       description:
         "Exploring the world of cybersecurity, Linux, and CTF competitions. Creating tools and resources to help secure the digital world.",
       stats: [
-        { label: "CTF Wins", value: 15 },
-        { label: "Security Tools", value: 8 },
-        { label: "Bug Bounties", value: 24 },
+        { label: "Years of Experience", value: "3+" },
+        { label: "Security Tools", value: "10+" },
+        { label: "CVEs", value: "172+" },
       ],
     },
     gamer: {
@@ -73,20 +73,20 @@ export function HeroSection() {
       description:
         "When I'm not hacking systems, I'm conquering virtual worlds. Gaming is not just a hobby, it's a way to sharpen strategic thinking and problem-solving skills.",
       stats: [
-        { label: "Games Completed", value: 87 },
-        { label: "Achievement Score", value: 12450 },
-        { label: "Gaming Hours", value: 3200 },
+        { label: "Games Completed", value: "30+" },
+        { label: "Achievement Score", value: "300+" },
+        { label: "Gaming Hours", value: "IDK" },
       ],
     },
     manga: {
       title: "Manga Aficionado",
       subtitle: "Collector & Reader",
       description:
-        "A dedicated manga reader with a growing collection. I appreciate the artistry and storytelling that brings characters and worlds to life through this unique medium.",
+        "A manga enjoyer. I appreciate the artistry and storytelling that brings characters and worlds to life through this unique medium.",
       stats: [
-        { label: "Manga Read", value: 142 },
-        { label: "Collection Size", value: 78 },
-        { label: "Favorite Series", value: 23 },
+        { label: "Manga Read", value: "100+" },
+        { label: "Hours Spent", value: "100+" },
+        { label: "Favorite Series", value: "10+" },
       ],
     },
   }
@@ -263,7 +263,7 @@ export function HeroSection() {
                   <Linkedin className="w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="https://twitter.com/dimasma___" target="_blank" rel="noopener noreferrer">
+              <Link href="https://twitter.com/dimasma__" target="_blank" rel="noopener noreferrer">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -349,70 +349,80 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
 
                 {activeTab === "gamer" && (
                   <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-900/50 to-purple-900/50">
-                    <div className="w-full max-w-md p-6 game-card">
-                      <div className="mb-6 text-center">
-                        <h3 className="mb-2 text-2xl font-bold text-blue-400">PLAYER STATS</h3>
-                        <div className="w-20 h-20 mx-auto mb-4 overflow-hidden rounded-full">
+                    <div className="w-full max-w-md p-4 game-card">
+                      <div className="mb-4 text-center">
+                        <h3 className="mb-2 text-xl font-bold text-blue-400">PLAYER STATS</h3>
+                        <div className="w-16 h-16 mx-auto mb-3 overflow-hidden rounded-full">
                           <Image
-                            src="/placeholder.svg?height=80&width=80"
-                            alt="Player Avatar"
-                            width={80}
-                            height={80}
+                            src="https://avatars.githubusercontent.com/u/92920739"
+                            alt="Dimas Maulana Avatar"
+                            width={64}
+                            height={64}
                             className="object-cover"
                           />
                         </div>
-                        <p className="text-xl font-semibold">DimasMa</p>
-                        <p className="text-sm text-blue-300">Level 42 Cyber Mage</p>
+                        <p className="text-lg font-semibold">DimasMa</p>
+                        <p className="text-xs text-blue-300">Level 42 Cyber Mage</p>
                       </div>
 
-                      <div className="mb-4">
+                      <div className="mb-2">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm">HP</span>
-                          <span className="text-sm">420/420</span>
+                          <span className="text-xs">HP</span>
+                          <span className="text-xs">420/420</span>
                         </div>
                         <div className="health-bar">
                           <div className="health-bar-fill" style={{ width: "100%" }}></div>
                         </div>
                       </div>
 
-                      <div className="mb-6">
+                      <div className="mb-2">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm">XP</span>
-                          <span className="text-sm">8,742 / 10,000</span>
+                          <span className="text-xs">MP</span>
+                          <span className="text-xs">340/340</span>
+                        </div>
+                        <div className="mp-bar">
+                          <div className="mp-bar-fill" style={{ width: "100%" }}></div>
+                        </div>
+                      </div>
+
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs">XP</span>
+                          <span className="text-xs">8,742 / 10,000</span>
                         </div>
                         <div className="xp-bar">
                           <div className="xp-bar-fill" style={{ width: "87%" }}></div>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div className="p-3 text-center rounded-lg bg-blue-900/50">
-                          <div className="text-xl font-bold text-blue-400">STR</div>
-                          <div className="text-lg">85</div>
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="p-2 text-center rounded-lg bg-blue-900/50">
+                          <div className="text-lg font-bold text-blue-400">STR</div>
+                          <div className="text-base">85</div>
                         </div>
-                        <div className="p-3 text-center rounded-lg bg-blue-900/50">
-                          <div className="text-xl font-bold text-blue-400">INT</div>
-                          <div className="text-lg">95</div>
+                        <div className="p-2 text-center rounded-lg bg-blue-900/50">
+                          <div className="text-lg font-bold text-blue-400">INT</div>
+                          <div className="text-base">95</div>
                         </div>
-                        <div className="p-3 text-center rounded-lg bg-blue-900/50">
-                          <div className="text-xl font-bold text-blue-400">DEX</div>
-                          <div className="text-lg">78</div>
+                        <div className="p-2 text-center rounded-lg bg-blue-900/50">
+                          <div className="text-lg font-bold text-blue-400">DEX</div>
+                          <div className="text-base">78</div>
                         </div>
-                        <div className="p-3 text-center rounded-lg bg-blue-900/50">
-                          <div className="text-xl font-bold text-blue-400">LCK</div>
-                          <div className="text-lg">42</div>
+                        <div className="p-2 text-center rounded-lg bg-blue-900/50">
+                          <div className="text-lg font-bold text-blue-400">LCK</div>
+                          <div className="text-base">42</div>
                         </div>
                       </div>
 
                       <div className="flex justify-center gap-2">
-                        <div className="p-2 text-center rounded-full achievement-badge">
-                          <Gamepad2 className="w-6 h-6 text-black" />
+                        <div className="p-1.5 text-center rounded-full achievement-badge">
+                          <Gamepad2 className="w-5 h-5 text-black" />
                         </div>
-                        <div className="p-2 text-center rounded-full achievement-badge">
-                          <Shield className="w-6 h-6 text-black" />
+                        <div className="p-1.5 text-center rounded-full achievement-badge">
+                          <Shield className="w-5 h-5 text-black" />
                         </div>
-                        <div className="p-2 text-center rounded-full achievement-badge">
-                          <BookOpen className="w-6 h-6 text-black" />
+                        <div className="p-1.5 text-center rounded-full achievement-badge">
+                          <BookOpen className="w-5 h-5 text-black" />
                         </div>
                       </div>
                     </div>
@@ -429,7 +439,7 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
 
                         <div className="mb-6 speech-bubble">
                           <p className="text-black">
-                            "In the world of manga, I find inspiration for both creativity and technical challenges!"
+                            "In the world of manga, I find it interesting to see how the characters and stories are created."
                           </p>
                         </div>
 
@@ -452,9 +462,9 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
                           <p className="text-sm text-black">Favorite Genres:</p>
                           <div className="flex flex-wrap justify-center gap-2 mt-2">
                             <span className="px-2 py-1 text-xs text-white bg-pink-500 rounded-full">Shonen</span>
-                            <span className="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">Sci-Fi</span>
-                            <span className="px-2 py-1 text-xs text-white bg-purple-500 rounded-full">Mystery</span>
-                            <span className="px-2 py-1 text-xs text-white bg-green-500 rounded-full">Adventure</span>
+                            <span className="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">Action</span>
+                            <span className="px-2 py-1 text-xs text-white bg-purple-500 rounded-full">Fantasy</span>
+                            <span className="px-2 py-1 text-xs text-white bg-green-500 rounded-full">Comedy</span>
                           </div>
                         </div>
                       </div>

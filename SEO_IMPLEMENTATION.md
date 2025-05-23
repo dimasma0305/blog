@@ -55,7 +55,7 @@ The main SEO component provides:
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Post Title" />
 <meta name="twitter:description" content="Clean excerpt..." />
-<meta name="twitter:creator" content="@dimasma___" />
+<meta name="twitter:creator" content="@dimasma__" />
 ```
 
 #### Blog Listing:
@@ -83,7 +83,7 @@ The main SEO component provides:
     "name": "Dimas Maulana",
     "url": "https://dimasma0305.github.io",
     "sameAs": [
-      "https://twitter.com/dimasma___",
+      "https://twitter.com/dimasma__",
       "https://github.com/dimasma0305"
     ]
   },

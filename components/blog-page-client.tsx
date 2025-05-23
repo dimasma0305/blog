@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
+import { useState, useMemo, useCallback, memo, useRef, useEffect } from "react"
 import { usePosts } from "@/hooks/use-posts"
 import PostCard from "@/components/post-card"
 import { SearchBar } from "@/components/search-bar"
@@ -9,37 +9,184 @@ import { BlogStats } from "@/components/blog-stats"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
+import type { Post } from "@/lib/posts-client"
 
-export default function BlogPageClient() {
+// Memoized error component
+const ErrorDisplay = memo(({ error, onRetry }: { error: string; onRetry: () => void }) => (
+  <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+    <p className="text-destructive text-sm">{error}</p>
+    <Button variant="outline" size="sm" onClick={onRetry} className="mt-2">
+      Try Again
+    </Button>
+  </div>
+))
+
+ErrorDisplay.displayName = 'ErrorDisplay'
+
+// Memoized search results display
+const SearchResults = memo(({ 
+  query, 
+  resultCount, 
+  totalCount, 
+  onClear 
+}: { 
+  query: string
+  resultCount: number
+  totalCount: number
+  onClear: () => void 
+}) => (
+  <div className="mb-6 flex items-center gap-2">
+    <p className="text-sm text-muted-foreground">
+      {resultCount} result{resultCount !== 1 ? 's' : ''} for "{query}"
+    </p>
+    <button 
+      onClick={onClear}
+      className="text-sm text-primary hover:underline"
+    >
+      Clear search
+    </button>
+  </div>
+))
+
+SearchResults.displayName = 'SearchResults'
+
+// Memoized posts grid with virtual scrolling for large lists
+const PostsGrid = memo(({ posts }: { posts: Post[] }) => {
+  const [visiblePosts, setVisiblePosts] = useState(12) // Initial batch
+  const loadMoreRef = useRef<HTMLDivElement>(null)
+
+  // Load more posts when scrolling near bottom
+  useEffect(() => {
+    if (!loadMoreRef.current || posts.length <= visiblePosts) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visiblePosts < posts.length) {
+          setVisiblePosts(prev => Math.min(prev + 6, posts.length))
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    observer.observe(loadMoreRef.current)
+    return () => observer.disconnect()
+  }, [posts.length, visiblePosts])
+
+  // Reset visible posts when posts change
+  useEffect(() => {
+    setVisiblePosts(12)
+  }, [posts])
+
+  const displayedPosts = useMemo(() => posts.slice(0, visiblePosts), [posts, visiblePosts])
+
+  return (
+    <>
+      <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+        {displayedPosts.map((post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
+      </div>
+      {visiblePosts < posts.length && (
+        <div ref={loadMoreRef} className="mt-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            Showing {visiblePosts} of {posts.length} posts
+          </p>
+        </div>
+      )}
+    </>
+  )
+})
+
+PostsGrid.displayName = 'PostsGrid'
+
+// Memoized empty states
+const EmptyState = memo(({ searchQuery, onClearSearch }: { 
+  searchQuery: string
+  onClearSearch?: () => void 
+}) => (
+  <div className="text-center py-12">
+    {searchQuery ? (
+      <>
+        <p className="text-muted-foreground">No posts found matching "{searchQuery}".</p>
+        {onClearSearch && (
+          <button 
+            onClick={onClearSearch}
+            className="mt-2 text-primary hover:underline"
+          >
+            Clear search to see all posts
+          </button>
+        )}
+      </>
+    ) : (
+      <p className="text-muted-foreground">No posts found. Add markdown files to the /posts directory.</p>
+    )}
+  </div>
+))
+
+EmptyState.displayName = 'EmptyState'
+
+// Memoized sidebar
+const Sidebar = memo(({ posts }: { posts: Post[] }) => (
+  <div className="w-full lg:w-1/4 space-y-6">
+    <BlogStats />
+    <Categories posts={posts} />
+  </div>
+))
+
+Sidebar.displayName = 'Sidebar'
+
+function BlogPageClient() {
   const { posts, loading, refreshing, error, refresh } = usePosts()
   const [searchQuery, setSearchQuery] = useState("")
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Filter posts based on search query with optimized filtering
+  // Optimized search function with debouncing
   const filteredPosts = useMemo(() => {
     if (!searchQuery.trim()) {
       return posts
     }
 
-    const query = searchQuery.toLowerCase()
+    const query = searchQuery.toLowerCase().trim()
+    
+    // Early exit for empty query
+    if (!query) return posts
+
     return posts.filter((post) => {
-      // Early return for exact title matches
-      if (post.title.toLowerCase().includes(query)) return true
-      
-      // Check other fields
+      // Quick string includes check (most common case)
       return (
+        post.title.toLowerCase().includes(query) ||
         post.excerpt.toLowerCase().includes(query) ||
-        post.categories.some(category => category.toLowerCase().includes(query)) ||
-        post.content.toLowerCase().includes(query)
+        post.categories.some(cat => cat.toLowerCase().includes(query)) ||
+        (post.content && post.content.toLowerCase().includes(query))
       )
     })
   }, [posts, searchQuery])
 
+  // Debounced search handler
   const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query)
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    
+    searchTimeoutRef.current = setTimeout(() => {
+      setSearchQuery(query)
+    }, 150) // Reduced debounce for better responsiveness
   }, [])
 
   const handleClearSearch = useCallback(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
     setSearchQuery("")
+  }, [])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
   }, [])
 
   return (
@@ -62,32 +209,15 @@ export default function BlogPageClient() {
       </div>
 
       {searchQuery && (
-        <div className="mb-6 flex items-center gap-2">
-          <p className="text-sm text-muted-foreground">
-            {filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''} for "{searchQuery}"
-          </p>
-          <button 
-            onClick={handleClearSearch}
-            className="text-sm text-primary hover:underline"
-          >
-            Clear search
-          </button>
-        </div>
+        <SearchResults
+          query={searchQuery}
+          resultCount={filteredPosts.length}
+          totalCount={posts.length}
+          onClear={handleClearSearch}
+        />
       )}
 
-      {error && (
-        <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-          <p className="text-destructive text-sm">{error}</p>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={refresh}
-            className="mt-2"
-          >
-            Try Again
-          </Button>
-        </div>
-      )}
+      {error && <ErrorDisplay error={error} onRetry={refresh} />}
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="w-full lg:w-3/4">
@@ -97,42 +227,16 @@ export default function BlogPageClient() {
               <p className="text-sm text-muted-foreground mt-4">Loading posts...</p>
             </div>
           ) : filteredPosts.length > 0 ? (
-            <>
-              <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-                {filteredPosts.map((post) => (
-                  <PostCard key={post.id} post={post} />
-                ))}
-              </div>
-              {posts.length > filteredPosts.length && (
-                <div className="mt-8 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Showing {filteredPosts.length} of {posts.length} posts
-                  </p>
-                </div>
-              )}
-            </>
-          ) : searchQuery ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">No posts found matching "{searchQuery}".</p>
-              <button 
-                onClick={handleClearSearch}
-                className="mt-2 text-primary hover:underline"
-              >
-                Clear search to see all posts
-              </button>
-            </div>
+            <PostsGrid posts={filteredPosts} />
           ) : (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">No posts found. Add markdown files to the /posts directory.</p>
-            </div>
+            <EmptyState searchQuery={searchQuery} onClearSearch={handleClearSearch} />
           )}
         </div>
         
-        <div className="w-full lg:w-1/4 space-y-6">
-          <BlogStats />
-          <Categories posts={filteredPosts} />
-        </div>
+        <Sidebar posts={filteredPosts} />
       </div>
     </div>
   )
-} 
+}
+
+export default memo(BlogPageClient) 

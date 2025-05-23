@@ -381,7 +381,6 @@ export function CTFSection() {
                   whileHover={{ scale: 1.02 }}
                 >
                   <Card className="game-card overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -446,21 +445,27 @@ export function CTFSection() {
           viewport={{ once: true }}
         >
           <div className="relative">
-            <Award className="w-12 h-12 mx-auto mb-4 text-primary" />
-            <motion.div
-              className="absolute -top-1 -right-1"
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 15, -15, 0],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Number.POSITIVE_INFINITY,
-                repeatType: "loop",
-              }}
-            >
-              <Sparkles className="w-6 h-6 text-yellow-500" />
-            </motion.div>
+            <div className="relative w-16 h-16 mx-auto mb-4">
+              <img 
+                src="https://avatars.githubusercontent.com/u/92920739" 
+                alt="Dimas Maulana Profile" 
+                className="w-16 h-16 rounded-full border-2 border-primary/50 shadow-lg"
+              />
+              <motion.div
+                className="absolute -top-1 -right-1"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 15, -15, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Number.POSITIVE_INFINITY,
+                  repeatType: "loop",
+                }}
+              >
+                <Sparkles className="w-6 h-6 text-yellow-500" />
+              </motion.div>
+            </div>
           </div>
           <h3 className="mb-2 text-xl font-semibold">Join My CTF Adventure!</h3>
           <p className="mb-4 text-muted-foreground">

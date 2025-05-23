@@ -28,14 +28,26 @@ interface PostCache {
   version: string
 }
 
-const CACHE_KEY = "blog_posts_cache_v2" // Updated cache key for new structure
-const CACHE_DURATION = 10 * 60 * 1000 // 10 minutes in milliseconds (increased since we load from index)
-const CACHE_VERSION = "2.0" // Updated version for new structure
+// Shared cache for index data
+interface IndexCache {
+  data: PostIndex
+  timestamp: number
+}
 
-// Memory cache for current session
+const CACHE_KEY = "blog_posts_cache_v2"
+const INDEX_CACHE_KEY = "blog_index_cache_v2"
+const CACHE_DURATION = 10 * 60 * 1000 // 10 minutes
+const CACHE_VERSION = "2.0"
+
+// Memory caches for current session
 let memoryCache: { posts: Post[]; timestamp: number; indexVersion?: string } | null = null
+let indexMemoryCache: IndexCache | null = null
 
-// Function to get cached posts from localStorage
+// Pending requests to avoid duplicate fetches
+let pendingIndexRequest: Promise<PostIndex> | null = null
+let pendingPostRequests = new Map<string, Promise<Post | null>>()
+
+// Optimized function to get cached posts from localStorage
 function getCachedPosts(): Post[] | null {
   try {
     const cached = localStorage.getItem(CACHE_KEY)
@@ -44,19 +56,37 @@ function getCachedPosts(): Post[] | null {
     const cacheData: PostCache = JSON.parse(cached)
     const now = Date.now()
     
-    // Check if cache is expired or version mismatch
-    if (
-      now - cacheData.timestamp > CACHE_DURATION || 
-      cacheData.version !== CACHE_VERSION
-    ) {
+    if (now - cacheData.timestamp > CACHE_DURATION || cacheData.version !== CACHE_VERSION) {
       localStorage.removeItem(CACHE_KEY)
       return null
     }
 
     return cacheData.posts
   } catch (error) {
-    console.error("Error reading cache:", error)
+    console.error("Error reading posts cache:", error)
     localStorage.removeItem(CACHE_KEY)
+    return null
+  }
+}
+
+// Optimized function to get cached index from localStorage
+function getCachedIndex(): PostIndex | null {
+  try {
+    const cached = localStorage.getItem(INDEX_CACHE_KEY)
+    if (!cached) return null
+
+    const cacheData: IndexCache = JSON.parse(cached)
+    const now = Date.now()
+    
+    if (now - cacheData.timestamp > CACHE_DURATION) {
+      localStorage.removeItem(INDEX_CACHE_KEY)
+      return null
+    }
+
+    return cacheData.data
+  } catch (error) {
+    console.error("Error reading index cache:", error)
+    localStorage.removeItem(INDEX_CACHE_KEY)
     return null
   }
 }
@@ -71,12 +101,66 @@ function setCachedPosts(posts: Post[], indexVersion?: string): void {
     }
     localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData))
   } catch (error) {
-    console.error("Error setting cache:", error)
-    // Silently fail if localStorage is not available
+    console.error("Error setting posts cache:", error)
   }
 }
 
-// Function to fetch posts with optimized loading from comprehensive index
+// Function to cache index in localStorage
+function setCachedIndex(indexData: PostIndex): void {
+  try {
+    const cacheData: IndexCache = {
+      data: indexData,
+      timestamp: Date.now()
+    }
+    localStorage.setItem(INDEX_CACHE_KEY, JSON.stringify(cacheData))
+  } catch (error) {
+    console.error("Error setting index cache:", error)
+  }
+}
+
+// Optimized function to fetch index with caching and deduplication
+async function fetchIndex(): Promise<PostIndex> {
+  // Check memory cache first
+  if (indexMemoryCache && Date.now() - indexMemoryCache.timestamp < CACHE_DURATION) {
+    return indexMemoryCache.data
+  }
+
+  // Check localStorage cache
+  const cachedIndex = getCachedIndex()
+  if (cachedIndex) {
+    indexMemoryCache = { data: cachedIndex, timestamp: Date.now() }
+    return cachedIndex
+  }
+
+  // If there's already a pending request, wait for it
+  if (pendingIndexRequest) {
+    return pendingIndexRequest
+  }
+
+  // Create new request
+  pendingIndexRequest = (async () => {
+    try {
+      const response = await fetch("/posts/index.json")
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts index")
+      }
+      
+      const indexData: PostIndex = await response.json()
+      
+      // Cache the results
+      setCachedIndex(indexData)
+      indexMemoryCache = { data: indexData, timestamp: Date.now() }
+      
+      return indexData
+    } finally {
+      pendingIndexRequest = null
+    }
+  })()
+
+  return pendingIndexRequest
+}
+
+// Optimized function to fetch posts with better caching
 export async function fetchAllPosts(): Promise<Post[]> {
   // Check memory cache first (fastest)
   if (memoryCache && Date.now() - memoryCache.timestamp < CACHE_DURATION) {
@@ -86,7 +170,6 @@ export async function fetchAllPosts(): Promise<Post[]> {
   // Check localStorage cache (fast)
   const cachedPosts = getCachedPosts()
   if (cachedPosts) {
-    // Update memory cache
     memoryCache = { posts: cachedPosts, timestamp: Date.now() }
     return cachedPosts
   }
@@ -94,19 +177,12 @@ export async function fetchAllPosts(): Promise<Post[]> {
   try {
     console.log("📖 Loading posts from index...")
     
-    // Fetch the comprehensive index with all post metadata
-    const response = await fetch("/posts/index.json")
-    if (!response.ok) {
-      throw new Error("Failed to fetch posts index")
-    }
-    
-    const indexData: PostIndex = await response.json()
-    
+    const indexData = await fetchIndex()
     console.log(`✅ Loaded ${indexData.totalPosts} posts from index (v${indexData.version})`)
     
-    // The posts are already processed in the index, just return them
-    const sortedPosts = indexData.posts.sort((a, b) => 
-      new Date(b.createdAt) > new Date(a.createdAt) ? 1 : -1
+    // Sort posts by creation date (more efficient sorting)
+    const sortedPosts = [...indexData.posts].sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
 
     // Cache the results
@@ -121,61 +197,45 @@ export async function fetchAllPosts(): Promise<Post[]> {
   } catch (error) {
     console.error("Error fetching posts from index:", error)
     console.log("🔄 Falling back to individual post loading...")
-    
-    // Fallback to the old method if index fails
     return fetchPostsIndividually()
   }
 }
 
-// Fallback function for individual post loading (legacy support)
+// Optimized fallback function with better error handling
 async function fetchPostsIndividually(): Promise<Post[]> {
   try {
-    // Try to get the old simple index format
-    const response = await fetch("/posts/index.json")
-    if (!response.ok) {
-      throw new Error("Failed to fetch posts index")
-    }
+    const indexData = await fetchIndex()
     
-    const data = await response.json()
-    
-    // Check if it's the new format or old format
-    if (data.posts && Array.isArray(data.posts)) {
-      // New format, but probably corrupted, return empty for now
+    if (!indexData.posts || !Array.isArray(indexData.posts)) {
       return []
     }
-    
-    // Old format - array of slugs
-    const postSlugs: string[] = Array.isArray(data) ? data : []
-    
-    // Process posts in batches to avoid blocking the UI
-    const BATCH_SIZE = 3
+
+    // Process posts in smaller batches for better performance
+    const BATCH_SIZE = 2
     const allPosts: Post[] = []
+    const slugs = indexData.posts.map(p => p.slug)
     
-    for (let i = 0; i < postSlugs.length; i += BATCH_SIZE) {
-      const batch = postSlugs.slice(i, i + BATCH_SIZE)
-      const batchPosts = await Promise.all(
-        batch.map(async (slug) => {
-          try {
-            return await fetchPostBySlug(slug)
-          } catch (error) {
-            console.error(`Error fetching post ${slug}:`, error)
-            return null
-          }
-        })
+    for (let i = 0; i < slugs.length; i += BATCH_SIZE) {
+      const batch = slugs.slice(i, i + BATCH_SIZE)
+      const batchPosts = await Promise.allSettled(
+        batch.map(slug => fetchPostBySlug(slug))
       )
       
-      // Add valid posts to the array
-      allPosts.push(...batchPosts.filter((post): post is Post => post !== null))
+      // Filter successful results
+      batchPosts.forEach((result) => {
+        if (result.status === 'fulfilled' && result.value) {
+          allPosts.push(result.value)
+        }
+      })
       
-      // Small delay between batches to keep UI responsive
-      if (i + BATCH_SIZE < postSlugs.length) {
-        await new Promise(resolve => setTimeout(resolve, 10))
+      // Micro-delay for better UX
+      if (i + BATCH_SIZE < slugs.length) {
+        await new Promise(resolve => setTimeout(resolve, 5))
       }
     }
 
-    // Sort posts by creation date
     return allPosts.sort((a, b) => 
-      new Date(b.createdAt) > new Date(a.createdAt) ? 1 : -1
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
   } catch (error) {
     console.error("Error in fallback post loading:", error)
@@ -183,119 +243,141 @@ async function fetchPostsIndividually(): Promise<Post[]> {
   }
 }
 
-// Function to fetch a post's full content (including processed markdown)
+// Highly optimized function to fetch individual posts with request deduplication
 export async function fetchPostBySlug(slug: string): Promise<Post | null> {
-  try {
-    // First, try to get the post from the index if available
-    if (memoryCache && memoryCache.posts) {
-      const postFromIndex = memoryCache.posts.find(p => p.slug === slug)
-      if (postFromIndex && postFromIndex.content) {
+  // Check if there's already a pending request for this slug
+  if (pendingPostRequests.has(slug)) {
+    return pendingPostRequests.get(slug)!
+  }
+
+  const fetchPromise = (async (): Promise<Post | null> => {
+    try {
+      // Check memory cache first
+      if (memoryCache?.posts) {
+        const postFromCache = memoryCache.posts.find(p => p.slug === slug)
+        if (postFromCache?.content) {
+          return postFromCache
+        }
+      }
+
+      // Get index data efficiently (uses shared cache)
+      const indexData = await fetchIndex()
+      const postFromIndex = indexData.posts?.find(p => p.slug === slug)
+      
+      if (!postFromIndex) {
+        console.warn(`Post ${slug} not found in index`)
+        return null
+      }
+
+      // If post has content in index, return it directly
+      if (postFromIndex.content) {
         return postFromIndex
       }
-    }
 
-    // If not in memory or content not available, fetch and process the markdown
-    const response = await fetch(`/posts/${slug}/README.md`)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch post ${slug}`)
-    }
-    
-    const rawContent = await response.text()
-
-    // Parse the frontmatter
-    const { data, content } = matter(rawContent)
-
-    // Process the markdown content with syntax highlighting
-    const processedContent = await remark()
-      .use(remarkGfm)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeSlug)
-      .use(rehypeAutolinkHeadings)
-      .use(rehypePrism, { showLineNumbers: true })
-      .use(rehypeStringify, { allowDangerousHtml: true })
-      .process(content)
-
-    const contentHtml = processedContent.toString()
-
-    // Process image paths to point to public directory
-    const processedHtml = contentHtml.replace(
-      /<img([^>]*)src="([^"]*)"([^>]*)>/g,
-      (match, before, imgPath, after) => {
-        let normalizedSrc = imgPath
-        if (imgPath.startsWith("./")) {
-          normalizedSrc = `/posts/${slug}/${imgPath.replace("./", "")}`
-        } else if (!imgPath.startsWith("/") && !imgPath.startsWith("http")) {
-          normalizedSrc = `/posts/${slug}/${imgPath}`
-        }
-
-        return `<img${before}src="${normalizedSrc}"${after} 
-          class="rounded-lg my-8" 
-          loading="lazy" 
-          onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found'">`
+      // Fetch and process markdown
+      const response = await fetch(`/posts/${slug}/README.md`)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch post ${slug}`)
       }
-    )
+      
+      const rawContent = await response.text()
+      const { data, content } = matter(rawContent)
 
-    // Extract the first paragraph as excerpt
-    const excerpt = content
-      .split("\n\n")[0]
-      .replace(/^#+\s+/, "")
-      .trim()
+      // Process markdown with optimized settings
+      const processedContent = await remark()
+        .use(remarkGfm)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypeSlug)
+        .use(rehypeAutolinkHeadings)
+        .use(rehypePrism, { showLineNumbers: true })
+        .use(rehypeStringify, { allowDangerousHtml: true })
+        .process(content)
 
-    // Process cover image path
-    let coverImage = data.cover_image || ""
-    if (coverImage && coverImage.startsWith("./")) {
-      coverImage = coverImage.replace("./", `/posts/${slug}/`)
+      // Optimized image processing
+      const processedHtml = processedContent.toString().replace(
+        /<img([^>]*)src="([^"]*)"([^>]*)>/g,
+        (match, before, imgPath, after) => {
+          let normalizedSrc = imgPath
+          if (imgPath.startsWith("./")) {
+            normalizedSrc = `/posts/${slug}/${imgPath.slice(2)}`
+          } else if (!imgPath.startsWith("/") && !imgPath.startsWith("http")) {
+            normalizedSrc = `/posts/${slug}/${imgPath}`
+          }
+
+          return `<img${before}src="${normalizedSrc}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found'">`
+        }
+      )
+
+      // Extract excerpt more efficiently
+      const excerpt = content.split("\n\n")[0]?.replace(/^#+\s+/, "").trim() || ""
+
+      // Process cover image
+      let coverImage = data.cover_image || ""
+      if (coverImage?.startsWith("./")) {
+        coverImage = `/posts/${slug}/${coverImage.slice(2)}`
+      }
+
+      // Create optimized post object using index data as base
+      const post: Post = {
+        ...postFromIndex,
+        excerpt,
+        content: processedHtml,
+        // Override with markdown frontmatter if available
+        title: data.title || postFromIndex.title,
+        createdAt: data.created_time || postFromIndex.createdAt,
+        updatedAt: data.last_edited_time || postFromIndex.updatedAt,
+        coverImage: coverImage || postFromIndex.coverImage,
+        iconEmoji: data.icon_emoji || postFromIndex.iconEmoji,
+        categories: data.categories || postFromIndex.categories,
+        verification: data.verification || postFromIndex.verification,
+        owner: data.owner || postFromIndex.owner,
+      }
+
+      return post
+    } catch (error) {
+      console.error(`Error processing post ${slug}:`, error)
+      return null
+    } finally {
+      // Clean up pending request
+      pendingPostRequests.delete(slug)
     }
+  })()
 
-    // Create post object
-    return {
-      id: data.id || slug,
-      slug,
-      title: data.title || "Untitled",
-      excerpt,
-      content: processedHtml,
-      createdAt: data.created_time || new Date().toISOString(),
-      updatedAt: data.last_edited_time || new Date().toISOString(),
-      coverImage,
-      iconEmoji: data.icon_emoji || "",
-      categories: data.categories || [],
-      verification: data.verification || {
-        state: "unverified",
-        verified_by: null,
-        date: null,
-      },
-      owner: data.owner || undefined,
-    }
-  } catch (error) {
-    console.error(`Error processing post ${slug}:`, error)
-    return null
-  }
+  // Store the promise to avoid duplicate requests
+  pendingPostRequests.set(slug, fetchPromise)
+  return fetchPromise
 }
 
-// Function to prefetch posts in the background
+// Optimized prefetch function
 export function prefetchPosts(): void {
-  // Use requestIdleCallback for background fetching
+  if (typeof window === 'undefined') return
+  
+  const prefetch = () => fetchAllPosts().catch(console.error)
+  
   if ('requestIdleCallback' in window) {
-    requestIdleCallback(() => {
-      fetchAllPosts().catch(console.error)
-    })
+    requestIdleCallback(prefetch, { timeout: 2000 })
   } else {
-    // Fallback for browsers without requestIdleCallback
-    setTimeout(() => {
-      fetchAllPosts().catch(console.error)
-    }, 100)
+    setTimeout(prefetch, 100)
   }
 }
 
-// Function to invalidate cache (useful for refresh)
+// Enhanced cache invalidation
 export function invalidateCache(): void {
+  // Clear localStorage caches
   localStorage.removeItem(CACHE_KEY)
-  // Also remove old cache key if it exists
-  localStorage.removeItem("blog_posts_cache")
+  localStorage.removeItem(INDEX_CACHE_KEY)
+  localStorage.removeItem("blog_posts_cache") // Legacy cleanup
+  
+  // Clear memory caches
   memoryCache = null
+  indexMemoryCache = null
+  
+  // Clear pending requests
+  pendingIndexRequest = null
+  pendingPostRequests.clear()
 }
 
-// Function to get blog statistics from index
+// Optimized stats function
 export async function getBlogStats(): Promise<{
   totalPosts: number
   categories: string[]
@@ -303,10 +385,7 @@ export async function getBlogStats(): Promise<{
   postsWithNotionLinks: number
 } | null> {
   try {
-    const response = await fetch("/posts/index.json")
-    if (!response.ok) return null
-    
-    const indexData: PostIndex = await response.json()
+    const indexData = await fetchIndex()
     
     return {
       totalPosts: indexData.totalPosts,
@@ -320,12 +399,6 @@ export async function getBlogStats(): Promise<{
   }
 }
 
-// Function to get all posts (alias for fetchAllPosts for compatibility)
-export async function getAllPosts(): Promise<Post[]> {
-  return fetchAllPosts()
-}
-
-// Function to get a post by slug (alias for fetchPostBySlug for compatibility)  
-export async function getPostBySlug(slug: string): Promise<Post | null> {
-  return fetchPostBySlug(slug)
-}
+// Compatibility aliases
+export const getAllPosts = fetchAllPosts
+export const getPostBySlug = fetchPostBySlug

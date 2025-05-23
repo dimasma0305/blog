@@ -1,41 +1,21 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { memo, useCallback, useMemo, Suspense, lazy } from "react"
 import Link from "next/link"
-import { fetchAllPosts } from "@/lib/posts-loader"
-import type { Post } from "@/lib/posts-client"
+import { usePosts } from "@/hooks/use-posts"
 import PostCard from "@/components/post-card"
-import { HeroSection } from "@/components/hero-section"
-import { ProjectsSection } from "@/components/projects-section"
-import { SkillsSection } from "@/components/skills-section"
-import { CTFSection } from "@/components/ctf-section"
-import { ExperienceSection } from "@/components/experience-section"
-import { FallbackImage } from "@/components/fallback-image"
 import { LoadingSpinner } from "@/components/loading-spinner"
+import { FallbackImage } from "@/components/fallback-image"
 
-export default function Home() {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [loading, setLoading] = useState(true)
+// Lazy load heavy sections for better initial page load
+const HeroSection = lazy(() => import("@/components/hero-section").then(m => ({ default: m.HeroSection })))
+const ProjectsSection = lazy(() => import("@/components/projects-section").then(m => ({ default: m.ProjectsSection })))
+const SkillsSection = lazy(() => import("@/components/skills-section").then(m => ({ default: m.SkillsSection })))
+const CTFSection = lazy(() => import("@/components/ctf-section").then(m => ({ default: m.CTFSection })))
+const ExperienceSection = lazy(() => import("@/components/experience-section").then(m => ({ default: m.ExperienceSection })))
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const allPosts = await fetchAllPosts()
-        setPosts(allPosts)
-      } catch (error) {
-        console.error("Error loading posts:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadPosts()
-  }, [])
-
-  return (
-    <div className="min-h-screen">
-      <HeroSection />
-
+// Memoized About section component
+const AboutSection = memo(() => (
       <div className="container px-4 py-16 mx-auto max-w-7xl" id="about">
         <h2 className="mb-8 text-3xl font-bold tracking-tight">About Me</h2>
         <div className="grid gap-8 md:grid-cols-2">
@@ -64,21 +44,22 @@ export default function Home() {
           <div className="flex items-center justify-center">
             <div className="relative w-64 h-64 overflow-hidden rounded-full border-4 border-primary/20">
               <FallbackImage
-                src="/placeholder.svg?height=256&width=256"
+            src="https://avatars.githubusercontent.com/u/92920739"
                 alt="Dimas Maulana"
                 fill
                 className="object-cover"
+            priority
               />
             </div>
           </div>
         </div>
       </div>
+))
 
-      <SkillsSection />
-      <ExperienceSection />
-      <ProjectsSection />
-      <CTFSection />
+AboutSection.displayName = 'AboutSection'
 
+// Memoized Blog section component
+const BlogSection = memo(({ posts, loading }: { posts: any[], loading: boolean }) => (
       <div className="container px-4 py-16 mx-auto max-w-7xl" id="blog">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold tracking-tight">Latest Blog Posts</h2>
@@ -103,6 +84,52 @@ export default function Home() {
           </div>
         )}
       </div>
+))
+
+BlogSection.displayName = 'BlogSection'
+
+// Loading fallback component
+const SectionFallback = memo(() => (
+  <div className="flex items-center justify-center py-16">
+    <LoadingSpinner />
+  </div>
+))
+
+SectionFallback.displayName = 'SectionFallback'
+
+function Home() {
+  const { posts, loading } = usePosts()
+
+  // Memoize latest posts to prevent unnecessary re-renders
+  const latestPosts = useMemo(() => posts.slice(0, 3), [posts])
+
+  return (
+    <div className="min-h-screen">
+      <Suspense fallback={<SectionFallback />}>
+        <HeroSection />
+      </Suspense>
+
+      <AboutSection />
+
+      <Suspense fallback={<SectionFallback />}>
+        <SkillsSection />
+      </Suspense>
+
+      <Suspense fallback={<SectionFallback />}>
+        <ExperienceSection />
+      </Suspense>
+
+      <Suspense fallback={<SectionFallback />}>
+        <ProjectsSection />
+      </Suspense>
+
+      <Suspense fallback={<SectionFallback />}>
+        <CTFSection />
+      </Suspense>
+
+      <BlogSection posts={latestPosts} loading={loading} />
     </div>
   )
 }
+
+export default memo(Home)

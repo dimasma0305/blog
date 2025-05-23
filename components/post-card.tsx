@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { memo, useCallback, useMemo } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
 import { motion } from "framer-motion"
@@ -16,74 +16,138 @@ interface PostCardProps {
   post: Post
 }
 
-export default function PostCard({ post }: PostCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
+// Memoized Notion button with optimized click handling
+const NotionButton = memo(({ notionUrl }: { notionUrl: string }) => {
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }, [])
+
+  return (
+    <div className="absolute top-4 left-4" onClick={handleClick}>
+      <NotionLinkButton notionUrl={notionUrl} variant="badge" />
+    </div>
+  )
+})
+
+NotionButton.displayName = 'NotionButton'
+
+// Memoized cover image component
+const CoverImage = memo(({ 
+  coverImage, 
+  title, 
+  iconEmoji, 
+  notionUrl 
+}: { 
+  coverImage: string
+  title: string
+  iconEmoji?: string
+  notionUrl?: string | null
+}) => (
+  <div className="relative w-full h-48 overflow-hidden">
+    <FallbackImage
+      src={coverImage}
+      alt={title}
+      fill
+      className="object-cover transition-transform duration-300 group-hover:scale-105"
+      fallbackSrc="/placeholder.svg?height=192&width=384"
+    />
+    {iconEmoji && (
+      <div className="absolute flex items-center justify-center w-10 h-10 text-xl bg-white rounded-full dark:bg-gray-800 top-4 right-4 shadow-sm">
+        {iconEmoji}
+      </div>
+    )}
+    {notionUrl && <NotionButton notionUrl={notionUrl} />}
+  </div>
+))
+
+CoverImage.displayName = 'CoverImage'
+
+// Memoized card footer
+const PostFooter = memo(({ createdAt, categories }: { 
+  createdAt: string
+  categories: string[]
+}) => {
+  const formattedDate = useMemo(() => 
+    format(new Date(createdAt), "MMM d, yyyy"), 
+    [createdAt]
+  )
+
+  return (
+    <CardFooter className="flex flex-wrap items-center justify-between">
+      <div className="flex items-center text-sm text-muted-foreground">
+        <Calendar className="w-4 h-4 mr-1" />
+        <time dateTime={createdAt}>{formattedDate}</time>
+      </div>
+      {categories.length > 0 && (
+        <div className="flex gap-2 mt-2">
+          <Badge variant="secondary">
+            {categories[0]}
+          </Badge>
+          {categories.length > 1 && (
+            <Badge variant="outline" className="text-xs">
+              +{categories.length - 1}
+            </Badge>
+          )}
+        </div>
+      )}
+    </CardFooter>
+  )
+})
+
+PostFooter.displayName = 'PostFooter'
+
+// Optimized animation variants
+const cardVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  hover: { y: -5 }
+}
+
+function PostCard({ post }: PostCardProps) {
+  // Memoize post URL
+  const postUrl = useMemo(() => `/posts/${post.slug}`, [post.slug])
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ y: -5 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      variants={cardVariants}
+      initial="initial"
+      animate="animate"
+      whileHover="hover"
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="group"
     >
-      <Link href={`/posts/${post.slug}`}>
-        <Card className="overflow-hidden h-full transition-shadow hover:shadow-lg">
+      <Link href={postUrl} prefetch={false}>
+        <Card className="overflow-hidden h-full transition-shadow duration-200 hover:shadow-lg">
           {post.coverImage && (
-            <div className="relative w-full h-48 overflow-hidden">
-              <motion.div
-                animate={{ scale: isHovered ? 1.05 : 1 }}
-                transition={{ duration: 0.3 }}
-                className="w-full h-full"
-              >
-                <FallbackImage
-                  src={post.coverImage}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  fallbackSrc="/placeholder.svg?height=192&width=384"
-                />
-              </motion.div>
-              {post.iconEmoji && (
-                <div className="absolute flex items-center justify-center w-10 h-10 text-xl bg-white rounded-full dark:bg-gray-800 top-4 right-4">
-                  {post.iconEmoji}
-                </div>
-              )}
-              {post.notionUrl && (
-                <div 
-                  className="absolute top-4 left-4"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <NotionLinkButton 
-                    notionUrl={post.notionUrl} 
-                    variant="badge"
-                  />
-                </div>
-              )}
-            </div>
+            <CoverImage
+              coverImage={post.coverImage}
+              title={post.title}
+              iconEmoji={post.iconEmoji}
+              notionUrl={post.notionUrl}
+            />
           )}
+          
           <CardHeader className="pb-2">
-            <h3 className="text-xl font-bold line-clamp-2">{post.title}</h3>
+            <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
+              {post.title}
+            </h3>
           </CardHeader>
+          
           <CardContent>
-            <p className="text-muted-foreground line-clamp-3">{post.excerpt}</p>
+            <p className="text-muted-foreground line-clamp-3 leading-relaxed">
+              {post.excerpt}
+            </p>
           </CardContent>
-          <CardFooter className="flex flex-wrap items-center justify-between">
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Calendar className="w-4 h-4 mr-1" />
-              <time dateTime={post.createdAt}>{format(new Date(post.createdAt), "MMM d, yyyy")}</time>
-            </div>
-            <div className="flex gap-2 mt-2">
-              {post.categories && post.categories.length > 0 && (
-                <Badge variant="secondary">
-                  {post.categories[0]}
-                </Badge>
-              )}
-            </div>
-          </CardFooter>
+          
+          <PostFooter 
+            createdAt={post.createdAt} 
+            categories={post.categories as string[]} 
+          />
         </Card>
       </Link>
     </motion.div>
   )
 }
+
+export default memo(PostCard)

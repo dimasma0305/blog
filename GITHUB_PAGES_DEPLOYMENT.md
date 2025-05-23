@@ -66,7 +66,7 @@ Each post includes:
 <!-- Social Media -->
 <meta property="og:url" content="https://dimasma0305.github.io/posts/slug" />
 <meta property="og:image" content="https://dimasma0305.github.io/cover-image.jpg" />
-<meta name="twitter:creator" content="@dimasma___" />
+<meta name="twitter:creator" content="@dimasma__" />
 ```
 
 ### 🗺️ Sitemap Structure

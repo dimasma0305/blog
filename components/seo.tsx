@@ -68,7 +68,7 @@ export function generatePostMetadata({ post, baseUrl = "https://dimasma0305.gith
       card: 'summary_large_image',
       title: post.title,
       description,
-      creator: '@dimasma___',
+      creator: '@dimasma__',
       images: [imageUrl],
     },
     robots: {
@@ -119,7 +119,7 @@ export function generateBlogMetadata(baseUrl = "https://dimasma0305.github.io"):
       card: 'summary_large_image',
       title: "Blog | Cybersecurity Research & CTF Writeups",
       description: "Explore cybersecurity research, CTF writeups, vulnerability analysis, and security tutorials.",
-      creator: '@dimasma___',
+      creator: '@dimasma__',
       images: [`${baseUrl}/og-image.jpg`],
     },
   }
@@ -146,7 +146,7 @@ export function PostStructuredData({ post, baseUrl = "https://dimasma0305.github
       name: post.owner?.name || "Dimas Maulana",
       url: baseUrl,
       sameAs: [
-        "https://twitter.com/dimasma___",
+        "https://twitter.com/dimasma__",
         "https://github.com/dimasma0305",
         "https://linkedin.com/in/dimas-maulana"
       ]
@@ -195,7 +195,7 @@ export function BlogStructuredData({ baseUrl = "https://dimasma0305.github.io" }
       name: "Dimas Maulana",
       url: baseUrl,
       sameAs: [
-        "https://twitter.com/dimasma___",
+        "https://twitter.com/dimasma__",
         "https://github.com/dimasma0305",
         "https://linkedin.com/in/dimas-maulana"
       ]

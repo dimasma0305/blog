@@ -1,19 +1,46 @@
-import * as React from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 
-const MOBILE_BREAKPOINT = 768
+// Optimized mobile detection hook with throttling and memoization
+export function useMobile(breakpoint = 768): boolean {
+  // Initialize with SSR-safe value
+  const [isMobile, setIsMobile] = useState(false)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isInitializedRef = useRef<boolean>(false)
 
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+  // Memoized check function
+  const checkMobile = useCallback(() => {
+    if (typeof window === 'undefined') return false
+    return window.innerWidth < breakpoint
+  }, [breakpoint])
 
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+  // Throttled resize handler for better performance
+  const handleResize = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
     }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange)
-  }, [])
+    
+    timeoutRef.current = setTimeout(() => {
+      setIsMobile(checkMobile())
+    }, 150) // Throttle to 150ms for better performance
+  }, [checkMobile])
 
-  return !!isMobile
+  useEffect(() => {
+    // Set initial value
+    if (!isInitializedRef.current) {
+      setIsMobile(checkMobile())
+      isInitializedRef.current = true
+    }
+
+    // Use passive event listener for better performance
+    window.addEventListener('resize', handleResize, { passive: true })
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [handleResize, checkMobile])
+
+  return isMobile
 }
