@@ -65,6 +65,20 @@ export const metadata: Metadata = {
   keywords: ["cybersecurity", "CTF", "capture the flag", "security research", "vulnerability", "bug bounty", "hacking", "Indonesia"],
   authors: [{ name: "Dimas Maulana", url: "https://dimasma0305.github.io/blog" }],
   creator: "Dimas Maulana",
+  icons: {
+    icon: [
+      { url: 'https://dimasma0305.github.io/blog/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: 'https://dimasma0305.github.io/blog/apple-icon.svg',
+    other: [
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        url: 'https://dimasma0305.github.io/blog/favicon.svg',
+      },
+    ],
+  },
+  manifest: 'https://dimasma0305.github.io/blog/manifest.json',
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -75,7 +89,7 @@ export const metadata: Metadata = {
       "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "https://dimasma0305.github.io/blog/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Dimas Maulana",
@@ -88,7 +102,7 @@ export const metadata: Metadata = {
     description:
       "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
     creator: "dimasma__",
-    images: ["/og-image.jpg"],
+    images: ["https://dimasma0305.github.io/blog/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -115,6 +129,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
+        
+        {/* Favicon and icons */}
+        <link rel="icon" type="image/svg+xml" href="https://dimasma0305.github.io/blog/favicon.svg" />
+        <link rel="apple-touch-icon" href="https://dimasma0305.github.io/blog/favicon.svg" />
+        <link rel="manifest" href="https://dimasma0305.github.io/blog/manifest.json" />
+        
+        {/* Theme and PWA meta tags */}
+        <meta name="theme-color" content="#000000" />
+        <meta name="application-name" content="Dimas Maulana" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Dimas Maulana" />
       </head>
       <body
         className={`${inter.variable} ${roboto.variable} ${merriweather.variable} ${firaCode.variable} font-roboto antialiased`}
