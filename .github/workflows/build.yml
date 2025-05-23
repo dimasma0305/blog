@@ -24,7 +24,7 @@ jobs:
           FILTER_PROP: ""
           FILTER_VALUES: ""
           CONVERT_PROP_CASE: snake
-          ARTICLE_PATH: posts/{title}/README.md
+          ARTICLE_PATH: public/posts/{title}/README.md
           ASSETS_PATH: ./imgs
           PARALLEL_PAGES: 25
           PARALLEL_DOWNLOADS_PER_PAGE: 3

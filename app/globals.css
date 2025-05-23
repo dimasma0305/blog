@@ -1,0 +1,358 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 263 75% 63%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 202 100% 50%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 12 100% 50%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.5rem;
+    --neon-pink: 330 100% 50%;
+    --neon-blue: 195 100% 50%;
+    --neon-green: 142 100% 45%;
+    --neon-purple: 280 100% 50%;
+  }
+
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 263 75% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 202 100% 50%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 12 100% 50%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --neon-pink: 330 100% 50%;
+    --neon-blue: 195 100% 50%;
+    --neon-green: 142 100% 45%;
+    --neon-purple: 280 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image: radial-gradient(circle at 25px 25px, rgba(var(--primary), 0.05) 2%, transparent 0%),
+      radial-gradient(circle at 75px 75px, rgba(var(--secondary), 0.05) 2%, transparent 0%);
+    background-size: 100px 100px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-merriweather);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-roboto);
+    font-weight: 500;
+  }
+  p,
+  li,
+  a,
+  span,
+  div {
+    font-family: var(--font-inter);
+  }
+  .font-roboto {
+    font-family: var(--font-roboto);
+  }
+  .font-merriweather {
+    font-family: var(--font-merriweather);
+  }
+}
+
+/* Replace neon text effects with more subtle styling */
+.neon-text {
+  color: hsl(var(--primary));
+  text-shadow: 0 1px 2px rgba(var(--primary), 0.3);
+}
+
+.neon-text-pink {
+  color: hsl(var(--primary));
+  text-shadow: 0 1px 2px rgba(var(--primary), 0.3);
+}
+
+.neon-text-blue {
+  color: hsl(var(--secondary));
+  text-shadow: 0 1px 2px rgba(var(--secondary), 0.3);
+}
+
+.neon-text-green {
+  color: hsl(var(--accent));
+  text-shadow: 0 1px 2px rgba(var(--accent), 0.3);
+}
+
+.neon-border {
+  box-shadow: 0 0 5px rgba(var(--primary), 0.8), 0 0 10px rgba(var(--primary), 0.5), 0 0 15px rgba(var(--primary), 0.3);
+}
+
+/* Custom scrollbar - minimal and neat */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prose customizations */
+.prose img {
+  border-radius: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Add a nice loading animation for images */
+@keyframes imageLoading {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+.prose img:not([src*="placeholder.svg"]) {
+  background: linear-gradient(
+    45deg,
+    rgba(var(--muted), 0.1) 25%,
+    rgba(var(--muted), 0.2) 50%,
+    rgba(var(--muted), 0.1) 75%
+  );
+  background-size: 200% 200%;
+  animation: imageLoading 1.5s ease infinite;
+}
+
+.prose img[src*="placeholder.svg"] {
+  border: 1px dashed hsl(var(--muted));
+  padding: 1rem;
+}
+
+.prose a {
+  color: hsl(var(--primary));
+  transition: color 0.2s ease;
+}
+
+.prose a:hover {
+  color: hsl(var(--primary) / 0.8);
+}
+
+.prose code {
+  border-radius: 0.25rem;
+  background-color: hsl(var(--muted));
+  padding: 0.125rem 0.25rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+.prose pre {
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--muted));
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.prose blockquote {
+  border-left: 4px solid hsl(var(--primary) / 0.2);
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+/* Syntax Highlighting Custom Styles */
+.prose pre {
+  background-color: #282a36;
+  color: #f8f8f2;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: #f8f8f2;
+  text-shadow: none;
+  font-family: "Fira Code", Consolas, Monaco, monospace;
+}
+
+/* Language-specific colors */
+.prose code[class*="language-"] {
+  color: #f8f8f2;
+}
+
+.prose .token.comment,
+.prose .token.prolog,
+.prose .token.doctype,
+.prose .token.cdata {
+  color: #6272a4;
+}
+
+.prose .token.punctuation {
+  color: #f8f8f2;
+}
+
+.prose .token.property,
+.prose .token.tag,
+.prose .token.constant,
+.prose .token.symbol,
+.prose .token.deleted {
+  color: #ff79c6;
+}
+
+.prose .token.boolean,
+.prose .token.number {
+  color: #bd93f9;
+}
+
+.prose .token.selector,
+.prose .token.attr-name,
+.prose .token.string,
+.prose .token.char,
+.prose .token.builtin,
+.prose .token.inserted {
+  color: #50fa7b;
+}
+
+.prose .token.operator,
+.prose .token.entity,
+.prose .token.url,
+.prose .language-css .token.string,
+.prose .style .token.string,
+.prose .token.variable {
+  color: #f8f8f2;
+}
+
+.prose .token.atrule,
+.prose .token.attr-value,
+.prose .token.function,
+.prose .token.class-name {
+  color: #f1fa8c;
+}
+
+.prose .token.keyword {
+  color: #8be9fd;
+}
+
+.prose .token.regex,
+.prose .token.important {
+  color: #ffb86c;
+}
+
+.prose .token.important,
+.prose .token.bold {
+  font-weight: bold;
+}
+
+.prose .token.italic {
+  font-style: italic;
+}
+
+.prose .token.entity {
+  cursor: help;
+}
+
+/* Line Numbers */
+.prose pre.line-numbers {
+  position: relative;
+  padding-left: 3.8em;
+  counter-reset: linenumber;
+}
+
+.prose pre.line-numbers > code {
+  position: relative;
+}
+
+.prose .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  font-size: 100%;
+  left: -3.8em;
+  width: 3em; /* works for line-numbers below 1000 lines */
+  letter-spacing: -1px;
+  border-right: 1px solid #999;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.prose .line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+}
+
+.prose .line-numbers-rows > span:before {
+  content: counter(linenumber);
+  color: #999;
+  display: block;
+  padding-right: 0.8em;
+  text-align: right;
+}

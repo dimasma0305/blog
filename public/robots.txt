@@ -1,0 +1,34 @@
+# Robots.txt for dimasma0305.github.io
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Important pages for crawling
+Allow: /blog
+Allow: /posts/
+Allow: /categories/
+
+# Disallow admin and private areas (if any)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /.*
+
+# Allow crawling of static assets
+Allow: /images/
+Allow: /posts/*/imgs/
+Allow: *.css
+Allow: *.js
+Allow: *.png
+Allow: *.jpg
+Allow: *.jpeg
+Allow: *.gif
+Allow: *.svg
+Allow: *.webp
+
+# Sitemap location
+Sitemap: https://dimasma0305.github.io/sitemap.xml
+
+# Crawl delay (optional - helps prevent overwhelming the server)
+Crawl-delay: 1 
