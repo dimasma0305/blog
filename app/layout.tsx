@@ -78,7 +78,7 @@ export const metadata: Metadata = {
       },
     ],
   },
-  manifest: 'https://dimasma0305.github.io/blog/manifest.json',
+  manifest: 'https://dimasma0305.github.io/blog/manifest.webmanifest',
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -133,7 +133,7 @@ export default function RootLayout({
         {/* Favicon and icons */}
         <link rel="icon" type="image/svg+xml" href="https://dimasma0305.github.io/blog/favicon.svg" />
         <link rel="apple-touch-icon" href="https://dimasma0305.github.io/blog/favicon.svg" />
-        <link rel="manifest" href="https://dimasma0305.github.io/blog/manifest.json" />
+        <link rel="manifest" href="https://dimasma0305.github.io/blog/manifest.webmanifest" />
         
         {/* Theme and PWA meta tags */}
         <meta name="theme-color" content="#000000" />
