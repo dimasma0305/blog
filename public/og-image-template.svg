@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <!-- Enhanced gradient backgrounds with cyberpunk vibes -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#0a0a0a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#001122;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#0a0a0a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Enhanced glass panel with neon edge -->
+    <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0.05" />
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.02" />
+      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0.05" />
+    </linearGradient>
+    
+    <!-- Dynamic logo container -->
+    <radialGradient id="logoContainer" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#001a0a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#000f05;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Enhanced cyberpunk glow effects -->
+    <filter id="logoGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00ff88" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#00ff88" flood-opacity="0.8"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="16" flood-color="#00d4ff" flood-opacity="0.6"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="24" flood-color="#a855f7" flood-opacity="0.4"/>
+    </filter>
+    
+    <filter id="titleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#00ff88" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00ff88" flood-opacity="0.8"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="12" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+    
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#00ff88" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00d4ff" flood-opacity="0.8"/>
+    </filter>
+    
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+    
+    <!-- Cyberpunk grid with enhanced details -->
+    <pattern id="cyberGrid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#003322" stroke-width="0.8" opacity="0.4"/>
+      <path d="M 30 0 L 30 60 M 0 30 L 60 30" fill="none" stroke="#001122" stroke-width="0.4" opacity="0.3"/>
+      <circle cx="0" cy="0" r="1.5" fill="#00ff88" opacity="0.6"/>
+      <circle cx="30" cy="30" r="0.8" fill="#00d4ff" opacity="0.4"/>
+    </pattern>
+    
+    <!-- Animated accent gradients -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1">
+        <animate attributeName="stop-opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="25%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:1">
+        <animate attributeName="stop-opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+    
+    <!-- Particle effect -->
+    <filter id="particleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#00ff88" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- Enhanced background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)" />
+  <rect width="1200" height="630" fill="url(#cyberGrid)" />
+  
+  <!-- Floating particle effects -->
+  <g opacity="0.6">
+    <circle cx="950" cy="150" r="2" fill="#00ff88" filter="url(#particleGlow)">
+      <animate attributeName="cy" values="150;140;150" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="200" cy="500" r="1.5" fill="#00d4ff" filter="url(#particleGlow)">
+      <animate attributeName="cx" values="200;210;200" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0.8;0.4" dur="6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="800" cy="400" r="1" fill="#a855f7" filter="url(#particleGlow)">
+      <animate attributeName="cy" values="400;390;400" dur="5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="100" cy="200" r="1.5" fill="#00ff88" filter="url(#particleGlow)">
+      <animate attributeName="cx" values="100;120;100" dur="7s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Main container with enhanced neon border -->
+  <rect x="60" y="60" width="1080" height="510" rx="24" 
+        fill="url(#glassGradient)" 
+        stroke="url(#accentGradient)" stroke-width="2" 
+        filter="url(#softShadow)"/>
+  
+  <!-- Content area with subtle inner glow -->
+  <rect x="80" y="80" width="1040" height="470" rx="16" 
+        fill="rgba(17, 17, 17, 0.9)" 
+        stroke="rgba(0, 255, 136, 0.2)" stroke-width="1"/>
+
+<g transform="translate(110, 0)">
+  <!-- Logo section -->
+  <g transform="translate(120, 200)">
+    <!-- Logo container with enhanced styling -->
+    <rect width="240" height="240" rx="20" fill="url(#logoContainer)" 
+          stroke="rgba(0,255,136,0.4)" stroke-width="2" filter="url(#neonGlow)"/>
+    
+    <!-- Decorative corner elements -->
+    <g stroke="#00ff88" stroke-width="2" fill="none" opacity="0.8">
+      <path d="M20 40 L20 20 L40 20" stroke-linecap="round"/>
+      <path d="M200 20 L220 20 L220 40" stroke-linecap="round"/>
+      <path d="M40 220 L20 220 L20 200" stroke-linecap="round"/>
+      <path d="M220 200 L220 220 L200 220" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Logo with enhanced effects -->
+    <g transform="translate(24, 24) scale(3.2)">
+      <path d="M20 16h12c10 0 12 8 12 16s-2 16-12 16H20V16z" 
+            stroke="#00ff88" stroke-width="3" fill="none" filter="url(#logoGlow)" />
+      <path d="M22 20v24h10c6 0 8-6 8-12s-2-12-8-12H22z" 
+            fill="#00ff88" filter="url(#logoGlow)" />
+    </g>
+    
+    <!-- Animated logo accent -->
+    <rect x="90" y="200" width="60" height="2" rx="1" fill="url(#accentGradient)"/>
+    
+    <!-- Logo label with glow -->
+    <text x="120" y="280" font-family="Inter, sans-serif" 
+          font-size="12" font-weight="600" fill="#00ff88" text-anchor="middle" filter="url(#neonGlow)">
+      DIMAS MAULANA
+    </text>
+  </g>
+
+  <!-- Content section -->
+  <g transform="translate(420, 180)">
+    <!-- Title with enhanced glow -->
+    <text x="0" y="48" font-family="Inter, sans-serif" font-size="56" font-weight="800" 
+          fill="#ffffff" filter="url(#titleGlow)" letter-spacing="-0.02em">
+      Dimas Maulana
+    </text>
+    
+    <!-- Enhanced professional badge -->
+    <rect x="0" y="70" width="280" height="28" rx="14" fill="rgba(0, 255, 136, 0.15)" 
+          stroke="url(#accentGradient)" stroke-width="1" filter="url(#neonGlow)"/>
+    <text x="140" y="88" font-family="Inter, sans-serif" font-size="13" font-weight="600" 
+          fill="#00ff88" text-anchor="middle">
+      CYBERSECURITY RESEARCHER
+    </text>
+    
+    <!-- Subtitle with enhanced styling -->
+    <text x="0" y="130" font-family="Inter, sans-serif" font-size="24" font-weight="600" 
+          fill="#e2e8f0" letter-spacing="-0.01em" filter="url(#neonGlow)">
+      CTF Player &amp; Security Expert
+    </text>
+    
+    <!-- Enhanced skills section -->
+    <g transform="translate(0, 160)">
+      <!-- CTF Player with animation -->
+      <rect x="0" y="0" width="100" height="22" rx="11" fill="rgba(0, 255, 136, 0.2)" 
+            stroke="#00ff88" stroke-width="1" filter="url(#neonGlow)"/>
+      <text x="50" y="15" font-family="Inter, sans-serif" font-size="10" font-weight="700" 
+            fill="#00ff88" text-anchor="middle">
+        CTF PLAYER
+      </text>
+      
+      <!-- Linux -->
+      <rect x="110" y="0" width="70" height="22" rx="11" fill="rgba(0, 212, 255, 0.2)" 
+            stroke="#00d4ff" stroke-width="1" filter="url(#neonGlow)"/>
+      <text x="145" y="15" font-family="Inter, sans-serif" font-size="10" font-weight="600" 
+            fill="#00d4ff" text-anchor="middle">
+        LINUX
+      </text>
+      
+      <!-- Pentesting -->
+      <rect x="190" y="0" width="100" height="22" rx="11" fill="rgba(168, 85, 247, 0.2)" 
+            stroke="#a855f7" stroke-width="1" filter="url(#neonGlow)"/>
+      <text x="240" y="15" font-family="Inter, sans-serif" font-size="10" font-weight="600" 
+            fill="#a855f7" text-anchor="middle">
+        PENTESTING
+      </text>
+      
+      <!-- Bug Hunting -->
+      <rect x="300" y="0" width="110" height="22" rx="11" fill="rgba(239, 68, 68, 0.2)" 
+            stroke="#ef4444" stroke-width="1" filter="url(#neonGlow)"/>
+      <text x="355" y="15" font-family="Inter, sans-serif" font-size="10" font-weight="600" 
+            fill="#ef4444" text-anchor="middle">
+        BUG HUNTING
+      </text>
+    </g>
+    
+    <!-- Enhanced description -->
+    <text x="0" y="210" font-family="Inter, sans-serif" font-size="16" font-weight="400" 
+          fill="#cccccc">
+      Exploring cybersecurity landscapes, building secure solutions,
+    </text>
+    <text x="0" y="230" font-family="Inter, sans-serif" font-size="16" font-weight="400" 
+          fill="#cccccc">
+      and sharing knowledge through CTF competitions
+    </text>
+    
+    <!-- Enhanced website section -->
+    <g transform="translate(0, 260)">
+      <!-- Enhanced terminal icon -->
+      <rect x="0" y="2" width="14" height="14" rx="2" fill="rgba(0,255,136,0.1)" stroke="#00ff88" stroke-width="1" filter="url(#neonGlow)"/>
+      <path d="M3 7l2 1.5-2 1.5M7 10h4" stroke="#00ff88" stroke-width="1.2" fill="none"/>
+      
+      <text x="22" y="12" font-family="JetBrains Mono, Consolas, monospace" font-size="14" font-weight="500" 
+            fill="#00ff88">
+        dimasma0305.github.io/blog
+      </text>
+    </g>
+  </g>
+</g>
+
+  <!-- Enhanced bottom accent with animation -->
+  <rect x="60" y="590" width="1080" height="4" rx="2" fill="url(#accentGradient)"/>
+  
+  <!-- Enhanced corner elements with neon effect -->
+  <g stroke="#00ff88" stroke-width="2" fill="none" opacity="0.8" filter="url(#neonGlow)">
+    <path d="M80 100 L80 80 L100 80" stroke-linecap="round"/>
+    <path d="M1100 80 L1120 80 L1120 100" stroke-linecap="round"/>
+    <path d="M100 550 L80 550 L80 530" stroke-linecap="round"/>
+    <path d="M1120 530 L1120 550 L1100 550" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Enhanced status indicator -->
+  <g transform="translate(1040, 100)">
+    <circle cx="0" cy="0" r="6" fill="#00ff88" filter="url(#neonGlow)"/>
+    <circle cx="0" cy="0" r="6" fill="#00ff88" opacity="0.4">
+      <animate attributeName="r" values="6;12;6" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="15" y="4" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#00ff88" filter="url(#neonGlow)">
+      ONLINE
+    </text>
+  </g>
+</svg> 

@@ -11,6 +11,7 @@ import { useInView } from "react-intersection-observer"
 import Particles from "react-particles"
 import { loadSlim } from "tsparticles-slim"
 import type { Engine } from "tsparticles-engine"
+import { withBasePath } from "@/lib/utils"
 
 export function HeroSection() {
   const [activeTab, setActiveTab] = useState("hacker")
@@ -447,7 +448,7 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
                           {[1, 2, 3, 4, 5, 6].map((i) => (
                             <div key={i} className="relative h-24 overflow-hidden bg-gray-200 rounded-md shadow-md">
                               <Image
-                                src={`/placeholder.svg?height=96&width=64&text=Manga ${i}`}
+                                src={withBasePath(`/placeholder.svg?height=96&width=64&text=Manga ${i}`)}
                                 alt={`Manga ${i}`}
                                 fill
                                 className="object-cover"
