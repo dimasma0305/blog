@@ -103,7 +103,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://github.com/orgs/p1g-sekai/people"
+                  href="https://ctftime.org/team/58979/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
