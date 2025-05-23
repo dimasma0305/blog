@@ -113,7 +113,7 @@ const teams = [
     name: "P1G SEKAI",
     role: "Member",
     description: "A merging of Project Sekai and r3kapig",
-    link: "https://github.com/orgs/p1g-sekai/people",
+    link: "https://ctftime.org/team/58979/",
     level: "80",
     members: "-",
     specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
