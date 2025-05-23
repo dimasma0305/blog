@@ -8,6 +8,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import remarkRehype from "remark-rehype"
 import rehypeStringify from "rehype-stringify"
 import rehypePrism from "rehype-prism-plus"
+import { withBasePath } from "./utils"
 
 const postsDirectory = path.join(process.cwd(), "posts")
 
@@ -50,7 +51,8 @@ function processImagePaths(content: string, slug: string): string {
     /<img([^>]*)src="\.\/imgs\/([^"]*)"([^>]*)>/g,
     (match, before, imgPath, after) => {
       console.log(`Found image path: ./imgs/${imgPath}`)
-      return `<img${before}src="/posts/${slug}/imgs/${imgPath}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
+      const fullPath = withBasePath(`/posts/${slug}/imgs/${imgPath}`)
+      return `<img${before}src="${fullPath}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
     },
   )
 
@@ -61,7 +63,8 @@ function processImagePaths(content: string, slug: string): string {
       console.log(`Found relative image path: ${path}`)
       // If the path doesn't already start with /posts/${slug}/
       if (!path.startsWith(`/posts/${slug}/`)) {
-        return `<img${before}src="/posts/${slug}/${path}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
+        const fullPath = withBasePath(`/posts/${slug}/${path}`)
+        return `<img${before}src="${fullPath}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
       }
       return match
     },
@@ -72,7 +75,8 @@ function processImagePaths(content: string, slug: string): string {
     /<img([^>]*)src="\/posts\/([^"]*)"([^>]*)>/g,
     (match, before, path, after) => {
       console.log(`Found absolute image path: /posts/${path}`)
-      return `<img${before}src="/posts/${path}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
+      const fullPath = withBasePath(`/posts/${path}`)
+      return `<img${before}src="${fullPath}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
     },
   )
 
@@ -80,7 +84,8 @@ function processImagePaths(content: string, slug: string): string {
   processedContent = processedContent.replace(/!\[(.*?)\]$$(\.\/imgs\/[^)]+)$$/g, (match, alt, path) => {
     const imgPath = path.replace("./imgs/", "")
     console.log(`Found markdown image path: ${path}`)
-    return `![${alt}](/posts/${slug}/imgs/${imgPath})`
+    const fullPath = withBasePath(`/posts/${slug}/imgs/${imgPath}`)
+    return `![${alt}](${fullPath})`
   })
 
   return processedContent
@@ -164,7 +169,11 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   // Process cover image path
   let coverImage = data.cover_image || ""
   if (coverImage && coverImage.startsWith("./")) {
-    coverImage = coverImage.replace("./", `/posts/${slug}/`)
+    coverImage = withBasePath(coverImage.replace("./", `/posts/${slug}/`))
+  } else if (coverImage && !coverImage.startsWith("http") && !coverImage.startsWith("/")) {
+    coverImage = withBasePath(`/posts/${slug}/${coverImage}`)
+  } else if (coverImage && coverImage.startsWith("/") && !coverImage.startsWith("http")) {
+    coverImage = withBasePath(coverImage)
   }
 
   // Create post object
