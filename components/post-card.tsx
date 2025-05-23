@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { FallbackImage } from "@/components/fallback-image"
 import { NotionLinkButton } from "@/components/notion-link-button"
+import { withBasePath } from "@/lib/utils"
 
 interface PostCardProps {
   post: Post
@@ -46,7 +47,7 @@ const CoverImage = memo(({
 }) => (
   <div className="relative w-full h-48 overflow-hidden">
     <FallbackImage
-      src={coverImage}
+      src={withBasePath(coverImage)}
       alt={title}
       fill
       className="object-cover transition-transform duration-300 group-hover:scale-105"
