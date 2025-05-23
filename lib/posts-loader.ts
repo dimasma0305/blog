@@ -1,6 +1,7 @@
 // This file provides optimized functions to load posts client-side from public directory
 
 import type { Post } from "./posts-client"
+import { withBasePath } from "./utils"
 import matter from "gray-matter"
 import { remark } from "remark"
 import remarkGfm from "remark-gfm"
@@ -140,7 +141,7 @@ async function fetchIndex(): Promise<PostIndex> {
   // Create new request
   pendingIndexRequest = (async () => {
     try {
-      const response = await fetch("/posts/index.json")
+      const response = await fetch(withBasePath("/posts/index.json"))
       if (!response.ok) {
         throw new Error("Failed to fetch posts index")
       }
@@ -275,7 +276,7 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
       }
 
       // Fetch and process markdown
-      const response = await fetch(`/posts/${slug}/README.md`)
+      const response = await fetch(withBasePath(`/posts/${slug}/README.md`))
       if (!response.ok) {
         throw new Error(`Failed to fetch post ${slug}`)
       }
@@ -299,9 +300,13 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
         (match, before, imgPath, after) => {
           let normalizedSrc = imgPath
           if (imgPath.startsWith("./")) {
-            normalizedSrc = `/posts/${slug}/${imgPath.slice(2)}`
+            normalizedSrc = withBasePath(`/posts/${slug}/${imgPath.slice(2)}`)
           } else if (!imgPath.startsWith("/") && !imgPath.startsWith("http")) {
-            normalizedSrc = `/posts/${slug}/${imgPath}`
+            normalizedSrc = withBasePath(`/posts/${slug}/${imgPath}`)
+          } else if (imgPath.startsWith("/") && !imgPath.startsWith("http")) {
+            normalizedSrc = withBasePath(imgPath)
+          } else {
+            normalizedSrc = imgPath
           }
 
           return `<img${before}src="${normalizedSrc}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found'">`
@@ -314,7 +319,11 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
       // Process cover image
       let coverImage = data.cover_image || ""
       if (coverImage?.startsWith("./")) {
-        coverImage = `/posts/${slug}/${coverImage.slice(2)}`
+        coverImage = withBasePath(`/posts/${slug}/${coverImage.slice(2)}`)
+      } else if (coverImage && !coverImage.startsWith("http") && !coverImage.startsWith("/")) {
+        coverImage = withBasePath(`/posts/${slug}/${coverImage}`)
+      } else if (coverImage?.startsWith("/") && !coverImage.startsWith("http")) {
+        coverImage = withBasePath(coverImage)
       }
 
       // Create optimized post object using index data as base
