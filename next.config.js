@@ -3,8 +3,8 @@ const nextConfig = {
   output: 'export',
   
   // GitHub Pages configuration
-  basePath: process.env.NODE_ENV === 'production' ? '' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/blog' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/blog' : '',
   
   // Disable server-side features for static export
   trailingSlash: true,

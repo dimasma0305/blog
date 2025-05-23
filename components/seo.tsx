@@ -6,7 +6,7 @@ interface SEOProps {
   baseUrl?: string
 }
 
-export function generatePostMetadata({ post, baseUrl = "https://dimasma0305.github.io" }: SEOProps): Metadata {
+export function generatePostMetadata({ post, baseUrl = "https://dimasma0305.github.io/blog" }: SEOProps): Metadata {
   const postUrl = `${baseUrl}/posts/${post.slug}`
   const imageUrl = post.coverImage?.startsWith('http') 
     ? post.coverImage 
@@ -92,7 +92,7 @@ export function generatePostMetadata({ post, baseUrl = "https://dimasma0305.gith
   }
 }
 
-export function generateBlogMetadata(baseUrl = "https://dimasma0305.github.io"): Metadata {
+export function generateBlogMetadata(baseUrl = "https://dimasma0305.github.io/blog"): Metadata {
   return {
     title: "Blog | Cybersecurity Research & CTF Writeups",
     description: "Explore cybersecurity research, CTF writeups, vulnerability analysis, and security tutorials by Dimas Maulana. Learn about web security, penetration testing, and ethical hacking.",
@@ -126,7 +126,7 @@ export function generateBlogMetadata(baseUrl = "https://dimasma0305.github.io"):
 }
 
 // JSON-LD Structured Data Component
-export function PostStructuredData({ post, baseUrl = "https://dimasma0305.github.io" }: SEOProps) {
+export function PostStructuredData({ post, baseUrl = "https://dimasma0305.github.io/blog" }: SEOProps) {
   const postUrl = `${baseUrl}/posts/${post.slug}`
   const imageUrl = post.coverImage?.startsWith('http') 
     ? post.coverImage 
@@ -183,7 +183,7 @@ export function PostStructuredData({ post, baseUrl = "https://dimasma0305.github
 }
 
 // Blog Section Structured Data
-export function BlogStructuredData({ baseUrl = "https://dimasma0305.github.io" }) {
+export function BlogStructuredData({ baseUrl = "https://dimasma0305.github.io/blog" }) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Blog",

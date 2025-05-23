@@ -28,7 +28,7 @@ Allow: *.svg
 Allow: *.webp
 
 # Sitemap location
-Sitemap: https://dimasma0305.github.io/sitemap.xml
+Sitemap: https://dimasma0305.github.io/blog/sitemap.xml
 
 # Crawl delay (optional - helps prevent overwhelming the server)
 Crawl-delay: 1 

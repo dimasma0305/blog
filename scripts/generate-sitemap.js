@@ -5,7 +5,7 @@ const path = require('path')
 
 const POSTS_DIR = path.join(process.cwd(), 'public', 'posts')
 const SITEMAP_FILE = path.join(process.cwd(), 'public', 'sitemap.xml')
-const BASE_URL = 'https://dimasma0305.github.io'
+const BASE_URL = 'https://dimasma0305.github.io/blog'
 
 function formatDate(date) {
   return new Date(date).toISOString().split('T')[0]

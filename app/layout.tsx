@@ -55,7 +55,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://dimasma0305.github.io'),
+  metadataBase: new URL('https://dimasma0305.github.io/blog'),
   title: {
     default: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
     template: "%s | Dimas Maulana",
@@ -63,12 +63,12 @@ export const metadata: Metadata = {
   description:
     "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
   keywords: ["cybersecurity", "CTF", "capture the flag", "security research", "vulnerability", "bug bounty", "hacking", "Indonesia"],
-  authors: [{ name: "Dimas Maulana", url: "https://dimasma0305.github.io" }],
+  authors: [{ name: "Dimas Maulana", url: "https://dimasma0305.github.io/blog" }],
   creator: "Dimas Maulana",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://dimasma0305.github.io",
+    url: "https://dimasma0305.github.io/blog",
     siteName: "Dimas Maulana",
     title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
     description:
