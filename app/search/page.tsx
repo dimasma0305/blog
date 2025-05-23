@@ -32,26 +32,26 @@ export default function SearchPage() {
 
     const query = searchQuery.toLowerCase()
     const results = posts.filter((post) => {
-      const titleMatch = post.title.toLowerCase().includes(query)
-      const excerptMatch = post.excerpt.toLowerCase().includes(query)
-      const contentMatch = post.content.toLowerCase().includes(query)
-      const categoryMatch = post.categories.some(category => 
-        category.toLowerCase().includes(query)
-      )
-      const ownerMatch = post.owner?.name.toLowerCase().includes(query)
+      const titleMatch = post.title?.toLowerCase().includes(query) || false
+      const excerptMatch = post.excerpt?.toLowerCase().includes(query) || false
+      const contentMatch = post.content?.toLowerCase().includes(query) || false
+      const categoryMatch = post.categories?.some(category => 
+        category?.toLowerCase().includes(query)
+      ) || false
+      const ownerMatch = post.owner?.name?.toLowerCase().includes(query) || false
 
       return titleMatch || excerptMatch || contentMatch || categoryMatch || ownerMatch
     })
 
     // Sort by relevance (title matches first, then excerpt, then content)
     return results.sort((a, b) => {
-      const aTitle = a.title.toLowerCase().includes(query) ? 3 : 0
-      const aExcerpt = a.excerpt.toLowerCase().includes(query) ? 2 : 0
-      const aCategory = a.categories.some(cat => cat.toLowerCase().includes(query)) ? 1 : 0
+      const aTitle = a.title?.toLowerCase().includes(query) ? 3 : 0
+      const aExcerpt = a.excerpt?.toLowerCase().includes(query) ? 2 : 0
+      const aCategory = a.categories?.some(cat => cat?.toLowerCase().includes(query)) ? 1 : 0
       
-      const bTitle = b.title.toLowerCase().includes(query) ? 3 : 0
-      const bExcerpt = b.excerpt.toLowerCase().includes(query) ? 2 : 0
-      const bCategory = b.categories.some(cat => cat.toLowerCase().includes(query)) ? 1 : 0
+      const bTitle = b.title?.toLowerCase().includes(query) ? 3 : 0
+      const bExcerpt = b.excerpt?.toLowerCase().includes(query) ? 2 : 0
+      const bCategory = b.categories?.some(cat => cat?.toLowerCase().includes(query)) ? 1 : 0
       
       const aScore = aTitle + aExcerpt + aCategory
       const bScore = bTitle + bExcerpt + bCategory
