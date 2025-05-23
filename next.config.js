@@ -18,9 +18,6 @@ const nextConfig = {
   // Disable strict mode for better compatibility
   reactStrictMode: false,
   
-  // Optimize for development
-  swcMinify: process.env.NODE_ENV === 'production',
-  
   // Experimental features for better performance
   experimental: {
     turbo: {

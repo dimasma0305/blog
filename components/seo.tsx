@@ -54,7 +54,7 @@ export function generatePostMetadata({ post, baseUrl = "https://dimasma0305.gith
       publishedTime: post.createdAt,
       modifiedTime: post.updatedAt,
       authors: [post.owner?.name || 'Dimas Maulana'],
-      tags: post.categories,
+      tags: [...post.categories],
       images: [
         {
           url: imageUrl,
