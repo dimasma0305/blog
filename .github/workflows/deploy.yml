@@ -39,7 +39,7 @@ jobs:
         npm install --legacy-peer-deps
 
     - name: Refresh content and check for updates
-      with:
+      env:
         NOTION_TOKEN: ${{ secrets.NOTION_SECRET }}
         NOTION_DATABASE_ID: "cc2cf42cf4b74db1901b8e28d3f67a06"
         BASE_URL: "/blog/"
