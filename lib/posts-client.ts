@@ -22,7 +22,7 @@ export type Post = {
   readonly slug: string
   readonly title: string
   readonly excerpt: string
-  content: string // Mutable for lazy loading
+  content?: string
   readonly createdAt: string
   readonly updatedAt: string
   readonly coverImage: string

@@ -45,6 +45,9 @@ export function Mdx({ content }: MdxProps) {
       // Enhanced heading styling and ID generation
       const headings = contentRef.current.querySelectorAll("h1, h2, h3, h4, h5, h6")
       headings.forEach((heading, index) => {
+        // Type guard to ensure heading is HTMLElement
+        if (!(heading instanceof HTMLElement)) return
+
         if (!heading.id) {
           const text = heading.textContent || ""
           const slug = text

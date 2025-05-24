@@ -77,7 +77,7 @@ export async function getAllPosts(): Promise<Post[]> {
     })
 
     // Sort by date
-    return allPosts.sort((a, b) => (new Date(b.createdAt) > new Date(a.createdAt) ? 1 : -1))
+    return allPosts.sort((a: Post, b: Post) => (new Date(b.createdAt) > new Date(a.createdAt) ? 1 : -1))
   } catch (error) {
     console.error("Error reading blog index:", error)
     return []

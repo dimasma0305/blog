@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js",
-    "generate-index": "node scripts/generate-blog-index.js",
+    "generate-blog-index": "node scripts/generate-blog-index.js",
+    "generate-blog-content": "node scripts/generate-blog-content.js",
     "generate-sitemap": "node scripts/generate-sitemap.js",
     "generate-robots": "node scripts/generate-robots.js"
   },
@@ -77,6 +78,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

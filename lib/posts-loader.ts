@@ -13,7 +13,7 @@ export type Post = {
   notionUrl?: string
   folder?: string
   verification: {
-    state: string
+    state: 'verified' | 'unverified' | 'pending'
     verified_by: string | null
     date: string | null
   }

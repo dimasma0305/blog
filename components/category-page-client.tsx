@@ -38,7 +38,7 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
       return (
         post.title.toLowerCase().includes(query) ||
         post.excerpt.toLowerCase().includes(query) ||
-        post.content.toLowerCase().includes(query)
+        (post.content && post.content.toLowerCase().includes(query))
       )
     })
   }, [categoryPosts, searchQuery])

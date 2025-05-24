@@ -30,7 +30,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
   const [isScrolling, setIsScrolling] = useState(false)
   const observerRef = useRef<IntersectionObserver | null>(null)
   const tocRef = useRef<HTMLDivElement>(null)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>()
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Calculate dynamic height based on viewport and content
   const calculateDynamicHeight = useCallback(() => {
