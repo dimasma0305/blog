@@ -114,7 +114,7 @@ const cardVariants = {
 
 function PostCard({ post }: PostCardProps) {
   // Memoize post URL
-  const postUrl = useMemo(() => withBasePath(`/posts/${post.slug}`), [post.slug])
+  const postUrl = useMemo(() => `/posts/${post.slug}`, [post.slug])
 
   return (
     <motion.div
@@ -125,7 +125,7 @@ function PostCard({ post }: PostCardProps) {
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="group"
     >
-      <Link href={postUrl} prefetch={false}>
+      <Link href={withBasePath(postUrl)} prefetch={false}>
         <Card className="overflow-hidden h-full transition-shadow duration-200 hover:shadow-lg">
           {post.coverImage && (
             <CoverImage
