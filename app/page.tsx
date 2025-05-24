@@ -6,6 +6,11 @@ import { usePosts } from "@/hooks/use-posts"
 import PostCard from "@/components/post-card"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { FallbackImage } from "@/components/fallback-image"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowRight, Code, Shield, Award, BookOpen } from "lucide-react"
+import { withBasePath } from "@/lib/utils"
 
 // Lazy load heavy sections for better initial page load
 const HeroSection = lazy(() => import("@/components/hero-section").then(m => ({ default: m.HeroSection })))
@@ -43,6 +48,14 @@ const AboutSection = memo(() => (
             <p className="text-lg">
               I enjoy creating CTF challenges, developing security tools, and sharing my knowledge through blog posts
               and resources.
+            </p>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Passionate cybersecurity professional with expertise in penetration testing, CTF competitions, and secure development practices. 
+              I love sharing knowledge and experiences through my blog. Check out my latest{" "}
+              <Link href={withBasePath("/blog")} className="text-primary hover:underline">
+                blog posts
+              </Link>
+              {" "}for insights into cybersecurity, CTF writeups, and technical tutorials.
             </p>
           </div>
           <div className="flex items-center justify-center">

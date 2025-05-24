@@ -1,5 +1,6 @@
 import PostPageClient from "@/components/post-page-client"
 import { generatePostMetadata } from "@/components/seo"
+import { withBasePath } from "@/lib/utils"
 import type { Metadata } from "next"
 
 // Generate static params for all posts
@@ -9,14 +10,12 @@ export async function generateStaticParams() {
     const fs = require("fs")
     const path = require("path")
 
-    const indexPath = path.join(process.cwd(), "public", "blog-index.json")
+    const indexPath = withBasePath(path.join(process.cwd(), "public", "blog-index.json"))
     const indexContent = fs.readFileSync(indexPath, "utf8")
     const blogIndex = JSON.parse(indexContent)
 
     // Extract slugs from the blog-index.json format
     const slugs = blogIndex.posts?.published?.map((post: any) => post.slug) || []
-
-    console.log(`📝 Generated static params for ${slugs.length} posts from blog-index.json`)
 
     return slugs.map((slug: string) => ({
       slug: slug,
@@ -33,7 +32,7 @@ export async function generateStaticParams() {
       // Try again after generating
       const fs = require("fs")
       const path = require("path")
-      const indexPath = path.join(process.cwd(), "public", "blog-index.json")
+      const indexPath = withBasePath(path.join(process.cwd(), "public", "blog-index.json"))
       const indexContent = fs.readFileSync(indexPath, "utf8")
       const blogIndex = JSON.parse(indexContent)
 
@@ -59,7 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const fs = require("fs")
     const path = require("path")
 
-    const indexPath = path.join(process.cwd(), "public", "blog-index.json")
+    const indexPath = withBasePath(path.join(process.cwd(), "public", "blog-index.json"))
     const indexContent = fs.readFileSync(indexPath, "utf8")
     const blogIndex = JSON.parse(indexContent)
 

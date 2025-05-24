@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import { ArrowLeft, Calendar, Tag, Clock, Share2, Folder } from "lucide-react"
 import Link from "next/link"
+import { withBasePath } from "@/lib/utils"
 
 import { fetchPostBySlug } from "@/lib/posts-loader"
 import { usePosts } from "@/hooks/use-posts"
@@ -64,13 +65,11 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl font-bold text-destructive">Post Not Found</h1>
-          <p className="text-muted-foreground max-w-md">
-            {error || "The requested post could not be found. It may have been moved or deleted."}
-          </p>
-          <Link href="/blog">
+      <div className="container px-4 py-12 mx-auto max-w-7xl">
+        <div className="text-center py-12">
+          <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
+          <p className="text-muted-foreground mb-4">{error || "The requested post could not be found."}</p>
+          <Link href={withBasePath("/blog")}>
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
@@ -102,7 +101,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
         <div className="container max-w-7xl mx-auto px-4 py-8">
           <div className="max-w-4xl">
             {/* Back Button */}
-            <Link href="/blog">
+            <Link href={withBasePath("/blog")}>
               <Button variant="ghost" size="sm" className="mb-6 -ml-2">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to all posts
@@ -118,7 +117,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {post.categories.map((category) => (
-                    <Link key={category} href={`/categories/${encodeURIComponent(category.toLowerCase())}`}>
+                    <Link key={category} href={withBasePath(`/categories/${encodeURIComponent(category.toLowerCase())}`)}>
                       <Badge
                         variant="default"
                         className="text-sm px-3 py-1 hover:bg-primary/90 transition-colors cursor-pointer"
@@ -262,7 +261,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {post.categories.map((category) => (
-                          <Link key={category} href={`/categories/${encodeURIComponent(category.toLowerCase())}`}>
+                          <Link key={category} href={withBasePath(`/categories/${encodeURIComponent(category.toLowerCase())}`)}>
                             <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer group">
                               <div className="p-2 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors">
                                 <Tag className="w-4 h-4 text-primary" />
@@ -321,7 +320,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {post.categories.map((category) => (
-                      <Link key={category} href={`/categories/${encodeURIComponent(category.toLowerCase())}`}>
+                      <Link key={category} href={withBasePath(`/categories/${encodeURIComponent(category.toLowerCase())}`)}>
                         <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group">
                           <div className="flex items-center gap-2">
                             <Tag className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />

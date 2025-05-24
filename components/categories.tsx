@@ -1,82 +1,79 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
+import { usePosts } from "@/hooks/use-posts"
+import { getAllCategories } from "@/lib/posts-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { Post } from "@/lib/posts-client"
+import { Badge } from "@/components/ui/badge"
+import { LoadingSpinner } from "@/components/loading-spinner"
+import { BookOpen, Folder } from "lucide-react"
+import Link from "next/link"
+import { withBasePath } from "@/lib/utils"
 
-interface CategoriesProps {
-  posts: Post[]
-}
+export function Categories() {
+  const { posts, loading } = usePosts()
 
-export function Categories({ posts }: CategoriesProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  if (loading) {
+    return (
+      <div className="flex justify-center py-8">
+        <LoadingSpinner />
+      </div>
+    )
+  }
 
-  // Extract categories from posts with counts
-  const categories = useMemo(() => {
-    const categoryMap = new Map<string, number>()
+  const categories = getAllCategories(posts)
 
-    posts.forEach((post) => {
-      if (post.categories && Array.isArray(post.categories)) {
-        post.categories.forEach((category) => {
-          if (category && typeof category === "string") {
-            categoryMap.set(category, (categoryMap.get(category) || 0) + 1)
-          }
-        })
-      }
-    })
+  if (categories.length === 0) {
+    return (
+      <Card>
+        <CardContent className="text-center py-12">
+          <Folder className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+          <p className="text-muted-foreground">No categories available yet.</p>
+        </CardContent>
+      </Card>
+    )
+  }
 
-    // Convert to array and sort by count (most popular first)
-    return Array.from(categoryMap.entries())
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-  }, [posts])
+  // Count posts per category
+  const categoriesWithCounts = categories.map((name) => ({
+    name,
+    count: posts.filter((post) => post.categories.includes(name)).length,
+  }))
+
+  // Sort by count (descending) then alphabetically
+  categoriesWithCounts.sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count
+    return a.name.localeCompare(b.name)
+  })
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Categories ({categories.length})</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Folder className="w-5 h-5" />
+          Categories
+          <Badge variant="secondary" className="text-xs">
+            {categories.length}
+          </Badge>
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-wrap gap-2">
-          {categories.length > 0 ? (
-            categories.map(({ name, count }) => (
-              <div key={name}>
-                <Link href={`/categories/${encodeURIComponent(name)}`}>
-                  <Badge
-                    variant={selectedCategory === name ? "default" : "secondary"}
-                    className="cursor-pointer flex items-center gap-1 hover:bg-primary hover:text-primary-foreground transition-colors"
-                    onClick={() => setSelectedCategory(name)}
-                  >
-                    {name}
-                    <span className="text-xs opacity-70">({count})</span>
-                  </Badge>
-                </Link>
+        <div className="space-y-3">
+          {categoriesWithCounts.map(({ name, count }) => (
+            <Link key={name} href={withBasePath(`/categories/${encodeURIComponent(name)}`)}>
+              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors">
+                    <BookOpen className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="font-medium group-hover:text-primary transition-colors">{name}</span>
+                </div>
+                <Badge variant="outline" className="group-hover:border-primary/50 transition-colors">
+                  {count}
+                </Badge>
               </div>
-            ))
-          ) : (
-            <div className="text-center py-4">
-              <p className="text-sm text-muted-foreground">No categories found</p>
-              <p className="text-xs text-muted-foreground mt-1">Posts loaded: {posts.length}</p>
-            </div>
-          )}
+            </Link>
+          ))}
         </div>
-
-        {categories.length > 0 && (
-          <div className="mt-6">
-            <h3 className="mb-3 text-sm font-medium text-muted-foreground">Popular Topics</h3>
-            <div className="flex flex-wrap gap-2">
-              {categories.slice(0, 5).map(({ name }) => (
-                <Link key={name} href={`/categories/${encodeURIComponent(name)}`}>
-                  <Badge variant="outline" className="hover:bg-muted transition-colors">
-                    {name}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   )

@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { fetchAllPosts } from "@/lib/posts-loader"
 import type { Post } from "@/lib/posts-client"
+import { withBasePath } from "@/lib/utils"
 
 interface PostNavigationProps {
   currentSlug: string
@@ -58,7 +59,7 @@ export function PostNavigation({ currentSlug }: PostNavigationProps) {
   return (
     <div className="flex justify-between mt-12 pt-6 border-t">
       {prevPost ? (
-        <Link href={`/posts/${prevPost.slug}`}>
+        <Link href={withBasePath(`/posts/${prevPost.slug}`)}>
           <Button variant="ghost" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             <span className="max-w-[200px] truncate">{prevPost.title}</span>
@@ -69,7 +70,7 @@ export function PostNavigation({ currentSlug }: PostNavigationProps) {
       )}
 
       {nextPost ? (
-        <Link href={`/posts/${nextPost.slug}`}>
+        <Link href={withBasePath(`/posts/${nextPost.slug}`)}>
           <Button variant="ghost" className="flex items-center gap-2">
             <span className="max-w-[200px] truncate">{nextPost.title}</span>
             <ArrowRight className="w-4 h-4" />

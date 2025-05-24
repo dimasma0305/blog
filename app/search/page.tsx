@@ -3,12 +3,14 @@
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
 import { usePosts } from "@/hooks/use-posts"
+import { searchPosts } from "@/lib/posts-client"
 import PostCard from "@/components/post-card"
 import { SearchBar } from "@/components/search-bar"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Search } from "lucide-react"
+import { withBasePath } from "@/lib/utils"
 
 export default function SearchPage() {
   const { posts, loading, error } = usePosts()
@@ -96,7 +98,7 @@ export default function SearchPage() {
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-4">Error Loading Posts</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
-          <Link href="/blog">
+          <Link href={withBasePath("/blog")}>
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
@@ -109,16 +111,20 @@ export default function SearchPage() {
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
-      <div className="mb-8">
-        <Link href="/blog">
-          <Button variant="ghost" className="mb-4">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">Search Posts</h1>
+          <p className="text-muted-foreground">Find articles by title, content, or category</p>
+        </div>
+        <Link href={withBasePath("/blog")}>
+          <Button variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Blog
           </Button>
         </Link>
-        
-        <h1 className="text-3xl font-bold tracking-tight mb-6">Search Posts</h1>
-        
+      </div>
+
+      <div className="mb-8">
         <div className="max-w-2xl">
           <SearchBar 
             onSearch={handleSearch}

@@ -8,6 +8,7 @@ import { Menu, X, Shield, BookOpen, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { withBasePath } from "@/lib/utils"
 
 const navItems = [
   { name: "Home", path: "/", icon: <Shield className="w-4 h-4" /> },
@@ -16,8 +17,8 @@ const navItems = [
   { name: "Experience", path: "/#experience", icon: <Shield className="w-4 h-4" /> },
   { name: "Projects", path: "/#projects", icon: <BookOpen className="w-4 h-4" /> },
   { name: "CTF", path: "/#ctf", icon: <Shield className="w-4 h-4" /> },
-  { name: "Blog", path: "/blog", icon: <BookOpen className="w-4 h-4" /> },
-  { name: "Search", path: "/search", icon: <Search className="w-4 h-4" /> },
+  { name: "Blog", path: withBasePath("/blog"), icon: <BookOpen className="w-4 h-4" /> },
+  { name: "Search", path: withBasePath("/search"), icon: <Search className="w-4 h-4" /> },
 ]
 
 export function Header() {

@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Github, Twitter, Linkedin, Mail } from "lucide-react"
+import { Github, Twitter, Linkedin, Mail, MapPin, FileText } from "lucide-react"
+import { withBasePath } from "@/lib/utils"
 
 export function Footer() {
   return (
@@ -13,25 +14,26 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h3 className="mb-4 text-lg font-medium">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
+            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <ul className="space-y-3">
               <li>
-                <Link href="/#about" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <Link href="/#about" className="text-muted-foreground hover:text-foreground">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/#projects" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <Link href="/#projects" className="text-muted-foreground hover:text-foreground">
                   Projects
                 </Link>
               </li>
               <li>
-                <Link href="/#ctf" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
-                  CTF Experience
+                <Link href="/#experience" className="text-muted-foreground hover:text-foreground">
+                  Experience
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <Link href={withBasePath("/blog")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                  <FileText className="w-4 h-4" />
                   Blog
                 </Link>
               </li>

@@ -114,7 +114,7 @@ const cardVariants = {
 
 function PostCard({ post }: PostCardProps) {
   // Memoize post URL
-  const postUrl = useMemo(() => `/posts/${post.slug}`, [post.slug])
+  const postUrl = useMemo(() => withBasePath(`/posts/${post.slug}`), [post.slug])
 
   return (
     <motion.div

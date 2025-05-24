@@ -9,6 +9,7 @@ import { LoadingSpinner } from "@/components/loading-spinner"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
+import { withBasePath } from "@/lib/utils"
 
 interface CategoryPageClientProps {
   category: string
@@ -71,7 +72,7 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-4">Error Loading Posts</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
-          <Link href="/blog">
+          <Link href={withBasePath("/blog")}>
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
@@ -88,7 +89,7 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-4">Category Not Found</h1>
           <p className="text-muted-foreground mb-4">The category "{category}" does not exist.</p>
-          <Link href="/blog">
+          <Link href={withBasePath("/blog")}>
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
