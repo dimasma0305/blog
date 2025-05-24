@@ -57,7 +57,7 @@ const CoverImage = memo(({
         alt={title}
         fill
         className="object-cover transition-transform duration-300 group-hover:scale-105"
-        fallbackSrc="/placeholder.svg?height=192&width=384"
+        fallbackSrc={withBasePath("/placeholder.svg?height=192&width=384")}
       />
       {iconEmoji && (
         <div className="absolute flex items-center justify-center w-10 h-10 text-xl bg-white rounded-full dark:bg-gray-800 top-4 right-4 shadow-sm">

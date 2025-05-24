@@ -1,5 +1,6 @@
 "use client"
 
+import { withBasePath } from "@/lib/utils"
 import { useEffect, useRef } from "react"
 
 interface MdxProps {
@@ -19,7 +20,7 @@ export function Mdx({ content }: MdxProps) {
             // @ts-ignore
             this.onerror = null
             // @ts-ignore
-            this.src = "/placeholder.svg?height=400&width=600&text=Image%20Not%20Found"
+            this.src = withBasePath("/placeholder.svg?height=400&width=600&text=Image%20Not%20Found")
           }
         }
 

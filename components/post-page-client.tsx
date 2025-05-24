@@ -146,7 +146,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
               {post.owner && (
                 <div className="flex items-center gap-3">
                   <Avatar className="w-10 h-10">
-                    <AvatarImage src={post.owner.avatar_url || "/placeholder.svg"} alt={post.owner.name} />
+                    <AvatarImage src={post.owner.avatar_url || withBasePath("/placeholder.svg")} alt={post.owner.name} />
                     <AvatarFallback>{post.owner.name.charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div>
@@ -217,7 +217,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
               fill
               className="object-cover"
               priority
-              fallbackSrc="/placeholder.svg?height=600&width=1200&text=Cover%20Image"
+              fallbackSrc={withBasePath("/placeholder.svg?height=600&width=1200&text=Cover%20Image")}
             />
           </div>
         </div>

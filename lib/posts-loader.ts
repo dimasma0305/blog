@@ -1,3 +1,5 @@
+import { withBasePath } from "./utils"
+
 // Define types for Post and PostIndex
 export type Post = {
   id: string
@@ -53,13 +55,6 @@ let indexMemoryCache: { data: PostIndex; timestamp: number } | null = null
 let pendingIndexRequest: Promise<PostIndex> | null = null
 const pendingPostRequests = new Map<string, Promise<Post | null>>()
 
-// Helper function to construct URLs with base path
-function withBasePath(path: string): string {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
-  return `${basePath}${path}`
-}
-
-// Helper function to create public Notion URL
 function createNotionPublicUrl(pageId: string): string {
   // Remove hyphens and create public Notion URL
   const cleanId = pageId.replace(/-/g, "")
@@ -84,7 +79,7 @@ function sanitizeUrl(url: string): string {
     const urlObj = new URL(url)
     // Only allow http and https protocols
     if (urlObj.protocol === "http:" || urlObj.protocol === "https:") {
-      return url
+      return escapeHtml(url)
     }
     return "#"
   } catch {
@@ -412,7 +407,7 @@ async function convertNotionBlockToHtml(block: any, folder: string): Promise<str
 
     case "quote":
       const quoteText = processRichText(block.content?.rich_text)
-      return quoteText ? `<blockquote class="notion-quote">${quoteText}</blockquote>` : ""
+      return quoteText ? `<blockquote class="notion-quote">${escapeHtml(quoteText)}</blockquote>` : ""
 
     case "callout":
       const calloutText = processRichText(block.content?.rich_text)
@@ -420,7 +415,7 @@ async function convertNotionBlockToHtml(block: any, folder: string): Promise<str
       return calloutText
         ? `<div class="notion-callout">
              <span class="notion-callout-icon">${escapeHtml(icon)}</span>
-             <div class="notion-callout-content">${calloutText}</div>
+             <div class="notion-callout-content">${escapeHtml(calloutText)}</div>
            </div>`
         : ""
 
@@ -434,8 +429,8 @@ async function convertNotionBlockToHtml(block: any, folder: string): Promise<str
         const altText = caption || "Image"
         return `<figure class="notion-image">
           <img src="${safeUrl}" alt="${escapeHtml(altText)}" class="notion-image-content" loading="lazy" 
-               onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found'">
-          ${caption ? `<figcaption class="notion-image-caption">${caption}</figcaption>` : ""}
+               onerror="this.onerror=null;this.src='${withBasePath('/placeholder.svg?height=400&width=600&text=Image%20Not%20Found')}'">
+          ${caption ? `<figcaption class="notion-image-caption">${escapeHtml(caption)}</figcaption>` : ""}
         </figure>`
       }
       return ""
