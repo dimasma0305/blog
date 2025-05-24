@@ -1,16 +1,11 @@
 "use client"
 
-import { memo, useCallback, useMemo, Suspense, lazy } from "react"
+import { memo, useMemo, Suspense, lazy } from "react"
 import Link from "next/link"
 import { usePosts } from "@/hooks/use-posts"
 import PostCard from "@/components/post-card"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { FallbackImage } from "@/components/fallback-image"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, Code, Shield, Award, BookOpen } from "lucide-react"
-import { withBasePath } from "@/lib/utils"
 
 // Lazy load heavy sections for better initial page load
 const HeroSection = lazy(() => import("@/components/hero-section").then(m => ({ default: m.HeroSection })))
