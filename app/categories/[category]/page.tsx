@@ -8,7 +8,7 @@ export async function generateStaticParams() {
     const fs = require('fs')
     const path = require('path')
     
-    const indexPath = withBasePath(path.join(process.cwd(), 'public', 'blog-index.json'))
+    const indexPath = path.join(process.cwd(), 'public', 'blog-index.json')
     const indexContent = fs.readFileSync(indexPath, 'utf8')
     const blogIndex = JSON.parse(indexContent)
     

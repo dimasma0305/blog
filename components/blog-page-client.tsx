@@ -130,7 +130,7 @@ EmptyState.displayName = "EmptyState"
 const Sidebar = memo(({ posts }: { posts: Post[] }) => (
   <div className="w-full lg:w-1/4 space-y-6">
     <BlogStats />
-    <Categories posts={posts} />
+    <Categories />
   </div>
 ))
 
@@ -235,7 +235,7 @@ function BlogPageClient() {
           )}
         </div>
 
-        <Sidebar posts={posts} />
+        <Sidebar posts={posts ? posts : []} />
       </div>
     </div>
   )
