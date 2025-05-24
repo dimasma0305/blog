@@ -29,6 +29,7 @@ next-env.d.ts
 # Generated SEO files (these are generated during build)
 /public/posts/index.json
 /public/sitemap.xml
+/public/robots.txt
 
 # Temporary files
 *.tmp

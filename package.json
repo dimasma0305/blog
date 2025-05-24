@@ -11,9 +11,10 @@
     "lint": "next lint",
     "generate-index": "node scripts/generate-index.js",
     "generate-sitemap": "node scripts/generate-sitemap.js",
+    "generate-robots": "node scripts/generate-robots.js",
     "watch-posts": "node scripts/watch-posts.js",
-    "prebuild": "npm run generate-index && npm run generate-sitemap",
-    "seo:check": "npm run generate-index && npm run generate-sitemap && echo '✅ SEO files generated'",
+    "prebuild": "npm run generate-index && npm run generate-sitemap && npm run generate-robots",
+    "seo:check": "npm run generate-index && npm run generate-sitemap && npm run generate-robots && echo '✅ SEO files generated'",
     "seo:validate": "echo '🔍 Validating SEO files...' && ls -la public/sitemap.xml public/robots.txt public/posts/index.json"
   },
   "dependencies": {
