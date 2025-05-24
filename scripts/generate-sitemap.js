@@ -6,7 +6,15 @@ const SITEMAP_FILE = path.join(process.cwd(), 'public', 'sitemap.xml')
 const BASE_URL = 'https://dimasma0305.github.io/blog'
 
 function formatDate(date) {
-  return new Date(date).toISOString().split('T')[0]
+  if (!date) return new Date().toISOString().split('T')[0]
+  
+  const dateObj = new Date(date)
+  if (isNaN(dateObj.getTime())) {
+    console.warn(`⚠️ Invalid date value: ${date}, using current date`)
+    return new Date().toISOString().split('T')[0]
+  }
+  
+  return dateObj.toISOString().split('T')[0]
 }
 
 function generateSitemap() {
@@ -23,6 +31,9 @@ function generateSitemap() {
     const indexContent = fs.readFileSync(indexPath, 'utf8')
     const indexData = JSON.parse(indexContent)
 
+    // Get generation date with fallback
+    const generationDate = indexData.meta?.generated_at || new Date().toISOString()
+
     // Static pages
     const staticPages = [
       {
@@ -33,7 +44,7 @@ function generateSitemap() {
       },
       {
         url: `${BASE_URL}/blog`,
-        lastmod: formatDate(indexData.generated),
+        lastmod: formatDate(generationDate),
         changefreq: 'weekly',
         priority: '0.9'
       },
@@ -46,17 +57,17 @@ function generateSitemap() {
     ]
 
     // Add category pages
-    const categoryPages = indexData.categories.map(category => ({
-      url: `${BASE_URL}/categories/${encodeURIComponent(category)}`,
-      lastmod: formatDate(indexData.generated),
+    const categoryPages = (indexData.categories || []).map(category => ({
+      url: `${BASE_URL}/categories/${encodeURIComponent(category.name || category)}`,
+      lastmod: formatDate(generationDate),
       changefreq: 'weekly',
       priority: '0.6'
     }))
 
     // Add blog posts
-    const postPages = indexData.posts.map(post => ({
+    const postPages = (indexData.posts || []).map(post => ({
       url: `${BASE_URL}/posts/${post.slug}`,
-      lastmod: formatDate(post.updatedAt || post.createdAt),
+      lastmod: formatDate(post.last_edited_time || post.created_time),
       changefreq: 'monthly',
       priority: '0.8'
     }))
