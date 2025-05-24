@@ -52,7 +52,6 @@ jobs:
 
     - name: Generate SEO files
       run: |
-        npm run generate-index
         npm run generate-sitemap
         npm run generate-robots
         echo "✅ SEO files generated successfully"
