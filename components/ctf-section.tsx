@@ -136,6 +136,24 @@ const teams = [
     members: "-",
     specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
   },
+  {
+    name: "SKSD",
+    role: "Member",
+    description: "Indonesian CTF Team that rarely participate in CTF competitions in 2025",
+    link: "https://ctftime.org/team/211952/",
+    level: "70",
+    members: "-",
+    specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
+  },
+  {
+    name: "HCS",
+    role: "Member", 
+    description: "CTF Team from ITS, often participate in CTF competitions on CTFTime",
+    link: "https://ctftime.org/team/70159/",
+    level: "40",
+    members: "-",
+    specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
+  },
 ]
 
 export function CTFSection() {
@@ -371,7 +389,7 @@ export function CTFSection() {
             </div>
 
             <div className="space-y-6">
-              {teams.map((team, index) => (
+              {teams.slice(0, 3).map((team, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: 20 }}
@@ -433,6 +451,72 @@ export function CTFSection() {
                   </Card>
                 </motion.div>
               ))}
+            </div>
+
+            <div className="mt-6">
+              <details className="group">
+                <summary className="flex items-center gap-2 px-4 py-2 cursor-pointer text-primary hover:underline bg-primary/10 rounded-lg">
+                  <span>View more guilds</span>
+                  <span className="transition-transform group-open:rotate-180">
+                    <ChevronDown className="w-4 h-4" />
+                  </span>
+                </summary>
+                <div className="space-y-6 mt-6">
+                  {teams.slice(3).map((team, index) => (
+                    <Card key={index + 3} className="game-card overflow-hidden">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20">
+                              <Users className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                              <CardTitle>{team.name}</CardTitle>
+                              <CardDescription>{team.role}</CardDescription>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/20">
+                            <Star className="w-4 h-4 text-yellow-500" />
+                            <span>LVL {team.level}</span>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <p>{team.description}</p>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="p-2 text-center rounded-lg bg-muted/50">
+                            <div className="text-sm text-muted-foreground">Members</div>
+                            <div className="text-xl font-bold">{team.members}</div>
+                          </div>
+                          <div className="p-2 text-center rounded-lg bg-muted/50">
+                            <div className="text-sm text-muted-foreground">Specialties</div>
+                            <div className="text-xl font-bold">{team.specialties.length}</div>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          {team.specialties.map((specialty) => (
+                            <Badge key={specialty} variant="secondary" className="bg-primary/20 hover:bg-primary/30">
+                              {specialty}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        <a href={team.link} target="_blank" rel="noopener noreferrer" className="inline-block w-full">
+                          <Button
+                            variant="outline"
+                            className="w-full gap-2 border-primary/50 hover:border-primary hover:bg-primary/10"
+                          >
+                            View Guild
+                            <ExternalLink className="w-4 h-4" />
+                          </Button>
+                        </a>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </details>
             </div>
           </div>
         </div>

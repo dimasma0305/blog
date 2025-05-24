@@ -34,6 +34,10 @@ const AboutSection = memo(() => (
                 {" "}
                 @project-sekai-ctf
               </Link>{" "}
+              teams, as well as{" "}
+              <span className="text-primary font-semibold">SKSD</span>{" "}
+              and{" "}
+              <span className="text-primary font-semibold">HCS</span>{" "}
               teams, where I participate in various CTF competitions and security research.
             </p>
             <p className="text-lg">

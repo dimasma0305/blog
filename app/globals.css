@@ -28,10 +28,11 @@
     --neon-blue: 195 100% 50%;
     --neon-green: 142 100% 45%;
     --neon-purple: 280 100% 50%;
+    --game-card-background: none;
   }
 
   .light {
-    --background: 0 0% 100%;
+    --background: none;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -42,7 +43,7 @@
     --secondary: 202 100% 50%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted-foreground: 240 3.8% 25.1%;
     --accent: 12 100% 50%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
@@ -54,6 +55,7 @@
     --neon-blue: 195 100% 50%;
     --neon-green: 142 100% 45%;
     --neon-purple: 280 100% 50%;
+    --game-card-background: none;
   }
 }
 
@@ -359,7 +361,7 @@ html {
 
 /* Gaming UI Components */
 .game-card {
-  background: rgba(0, 0, 30, 0.8);
+  background: rgba(var(--game-card-background));
   border: 2px solid rgba(100, 149, 237, 0.3);
   border-radius: 12px;
   backdrop-filter: blur(10px);
