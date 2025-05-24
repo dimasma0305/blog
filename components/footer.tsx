@@ -32,7 +32,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href={withBasePath("/blog")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <Link href={"/blog"} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
                   <FileText className="w-4 h-4" />
                   Blog
                 </Link>

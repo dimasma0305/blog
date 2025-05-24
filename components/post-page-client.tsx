@@ -69,7 +69,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
           <p className="text-muted-foreground mb-4">{error || "The requested post could not be found."}</p>
-          <Link href={withBasePath("/blog")}>
+          <Link href={"/blog"}>
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
@@ -101,7 +101,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
         <div className="container max-w-7xl mx-auto px-4 py-8">
           <div className="max-w-4xl">
             {/* Back Button */}
-            <Link href={withBasePath("/blog")}>
+            <Link href={"/blog"}>
               <Button variant="ghost" size="sm" className="mb-6 -ml-2">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to all posts
@@ -117,7 +117,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {post.categories.map((category) => (
-                    <Link key={category} href={withBasePath(`/categories/${encodeURIComponent(category.toLowerCase())}`)}>
+                    <Link key={category} href={`/categories/${encodeURIComponent(category.toLowerCase())}`}>
                       <Badge
                         variant="default"
                         className="text-sm px-3 py-1 hover:bg-primary/90 transition-colors cursor-pointer"
@@ -261,7 +261,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {post.categories.map((category) => (
-                          <Link key={category} href={withBasePath(`/categories/${encodeURIComponent(category.toLowerCase())}`)}>
+                          <Link key={category} href={`/categories/${encodeURIComponent(category.toLowerCase())}`}>
                             <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer group">
                               <div className="p-2 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors">
                                 <Tag className="w-4 h-4 text-primary" />
@@ -320,7 +320,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {post.categories.map((category) => (
-                      <Link key={category} href={withBasePath(`/categories/${encodeURIComponent(category.toLowerCase())}`)}>
+                      <Link key={category} href={`/categories/${encodeURIComponent(category.toLowerCase())}`}>
                         <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group">
                           <div className="flex items-center gap-2">
                             <Tag className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />

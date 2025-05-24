@@ -125,7 +125,7 @@ function PostCard({ post }: PostCardProps) {
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="group"
     >
-      <Link href={withBasePath(postUrl)} prefetch={false}>
+      <Link href={postUrl} prefetch={false}>
         <Card className="overflow-hidden h-full transition-shadow duration-200 hover:shadow-lg">
           {post.coverImage && (
             <CoverImage

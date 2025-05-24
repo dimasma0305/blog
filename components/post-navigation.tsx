@@ -59,7 +59,7 @@ export function PostNavigation({ currentSlug }: PostNavigationProps) {
   return (
     <div className="flex justify-between mt-12 pt-6 border-t">
       {prevPost ? (
-        <Link href={withBasePath(`/posts/${prevPost.slug}`)}>
+        <Link href={`/posts/${prevPost.slug}`}>
           <Button variant="ghost" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             <span className="max-w-[200px] truncate">{prevPost.title}</span>
@@ -70,7 +70,7 @@ export function PostNavigation({ currentSlug }: PostNavigationProps) {
       )}
 
       {nextPost ? (
-        <Link href={withBasePath(`/posts/${nextPost.slug}`)}>
+        <Link href={`/posts/${nextPost.slug}`}>
           <Button variant="ghost" className="flex items-center gap-2">
             <span className="max-w-[200px] truncate">{nextPost.title}</span>
             <ArrowRight className="w-4 h-4" />

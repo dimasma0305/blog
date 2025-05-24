@@ -52,7 +52,7 @@ const AboutSection = memo(() => (
             <p className="text-lg text-muted-foreground leading-relaxed">
               Passionate cybersecurity professional with expertise in penetration testing, CTF competitions, and secure development practices. 
               I love sharing knowledge and experiences through my blog. Check out my latest{" "}
-              <Link href={withBasePath("/blog")} className="text-primary hover:underline">
+              <Link href={"/blog"} className="text-primary hover:underline">
                 blog posts
               </Link>
               {" "}for insights into cybersecurity, CTF writeups, and technical tutorials.

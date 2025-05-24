@@ -59,7 +59,7 @@ export function Categories() {
       <CardContent>
         <div className="space-y-3">
           {categoriesWithCounts.map(({ name, count }) => (
-            <Link key={name} href={withBasePath(`/categories/${encodeURIComponent(name)}`)}>
+            <Link key={name} href={`/categories/${encodeURIComponent(name)}`}>
               <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors">
