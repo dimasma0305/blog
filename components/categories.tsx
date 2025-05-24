@@ -1,11 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { getAllCategories } from "@/lib/posts-client" // Import from client-safe file
 import type { Post } from "@/lib/posts-client"
 
 interface CategoriesProps {
@@ -14,44 +12,71 @@ interface CategoriesProps {
 
 export function Categories({ posts }: CategoriesProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const categories = getAllCategories(posts)
+
+  // Extract categories from posts with counts
+  const categories = useMemo(() => {
+    const categoryMap = new Map<string, number>()
+
+    posts.forEach((post) => {
+      if (post.categories && Array.isArray(post.categories)) {
+        post.categories.forEach((category) => {
+          if (category && typeof category === "string") {
+            categoryMap.set(category, (categoryMap.get(category) || 0) + 1)
+          }
+        })
+      }
+    })
+
+    // Convert to array and sort by count (most popular first)
+    return Array.from(categoryMap.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+  }, [posts])
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Categories</CardTitle>
+        <CardTitle>Categories ({categories.length})</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap gap-2">
           {categories.length > 0 ? (
-            categories.map((category) => (
-              <motion.div key={category} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link href={`/categories/${category}`}>
+            categories.map(({ name, count }) => (
+              <div key={name}>
+                <Link href={`/categories/${encodeURIComponent(name)}`}>
                   <Badge
-                    variant={selectedCategory === category ? "default" : "secondary"}
-                    className="cursor-pointer"
-                    onClick={() => setSelectedCategory(category)}
+                    variant={selectedCategory === name ? "default" : "secondary"}
+                    className="cursor-pointer flex items-center gap-1 hover:bg-primary hover:text-primary-foreground transition-colors"
+                    onClick={() => setSelectedCategory(name)}
                   >
-                    {category}
+                    {name}
+                    <span className="text-xs opacity-70">({count})</span>
                   </Badge>
                 </Link>
-              </motion.div>
+              </div>
             ))
           ) : (
-            <p className="text-sm text-muted-foreground">No categories found</p>
+            <div className="text-center py-4">
+              <p className="text-sm text-muted-foreground">No categories found</p>
+              <p className="text-xs text-muted-foreground mt-1">Posts loaded: {posts.length}</p>
+            </div>
           )}
         </div>
 
-        <div className="mt-8">
-          <h3 className="mb-4 text-lg font-medium">Popular Tags</h3>
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="outline">CTF</Badge>
-            <Badge variant="outline">Security</Badge>
-            <Badge variant="outline">Programming</Badge>
-            <Badge variant="outline">Web</Badge>
-            <Badge variant="outline">Hacking</Badge>
+        {categories.length > 0 && (
+          <div className="mt-6">
+            <h3 className="mb-3 text-sm font-medium text-muted-foreground">Popular Topics</h3>
+            <div className="flex flex-wrap gap-2">
+              {categories.slice(0, 5).map(({ name }) => (
+                <Link key={name} href={`/categories/${encodeURIComponent(name)}`}>
+                  <Badge variant="outline" className="hover:bg-muted transition-colors">
+                    {name}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   )

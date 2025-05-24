@@ -142,4 +142,4 @@ export function usePosts(): UsePostsReturn {
     refresh,
     clearError,
   }), [state, refresh, clearError])
-} 
+}

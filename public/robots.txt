@@ -31,4 +31,4 @@ Allow: *.webp
 Sitemap: https://dimasma0305.github.io/blog/sitemap.xml
 
 # Crawl delay (optional - helps prevent overwhelming the server)
-Crawl-delay: 1 
+Crawl-delay: 1

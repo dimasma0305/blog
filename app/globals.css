@@ -2,60 +2,85 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 263 75% 63%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 202 100% 50%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 12 100% 50%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --radius: 0.5rem;
-    --neon-pink: 330 100% 50%;
-    --neon-blue: 195 100% 50%;
-    --neon-green: 142 100% 45%;
-    --neon-purple: 280 100% 50%;
-    --game-card-background: none;
-  }
-
-  .light {
     --background: none;
-    --foreground: 240 10% 3.9%;
+    --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 263 75% 50%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 220 90% 56%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 202 100% 50%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 25.1%;
-    --accent: 12 100% 50%;
-    --accent-foreground: 0 0% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 220 90% 56%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 220 90% 56%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --neon-pink: 330 100% 50%;
-    --neon-blue: 195 100% 50%;
-    --neon-green: 142 100% 45%;
-    --neon-purple: 280 100% 50%;
-    --game-card-background: none;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 220 90% 56%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -65,371 +90,782 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(circle at 25px 25px, rgba(var(--primary), 0.05) 2%, transparent 0%),
-      radial-gradient(circle at 75px 75px, rgba(var(--secondary), 0.05) 2%, transparent 0%);
-    background-size: 100px 100px;
-  }
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-merriweather);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-roboto);
-    font-weight: 500;
-  }
-  p,
-  li,
-  a,
-  span,
-  div {
-    font-family: var(--font-inter);
-  }
-  .font-roboto {
-    font-family: var(--font-roboto);
-  }
-  .font-merriweather {
-    font-family: var(--font-merriweather);
   }
 }
 
-/* Replace neon text effects with more subtle styling */
-.neon-text {
-  color: hsl(var(--primary));
-  text-shadow: 0 1px 2px rgba(var(--primary), 0.3);
+/* Notion-like content styling */
+.notion-paragraph {
+  @apply mb-4 leading-relaxed text-foreground;
 }
 
-.neon-text-pink {
-  color: hsl(var(--primary));
-  text-shadow: 0 1px 2px rgba(var(--primary), 0.3);
+.notion-heading-1 {
+  @apply text-3xl font-bold text-foreground mb-6 mt-8;
 }
 
-.neon-text-blue {
-  color: hsl(var(--secondary));
-  text-shadow: 0 1px 2px rgba(var(--secondary), 0.3);
+.notion-heading-2 {
+  @apply text-2xl font-semibold text-foreground mb-4 mt-6;
 }
 
-.neon-text-green {
-  color: hsl(var(--accent));
-  text-shadow: 0 1px 2px rgba(var(--accent), 0.3);
+.notion-heading-3 {
+  @apply text-xl font-medium text-foreground mb-3 mt-5;
 }
 
-.neon-border {
-  box-shadow: 0 0 5px rgba(var(--primary), 0.8), 0 0 10px rgba(var(--primary), 0.5), 0 0 15px rgba(var(--primary), 0.3);
+.notion-list-item {
+  @apply mb-2 ml-6 text-foreground;
+  list-style-type: disc;
 }
 
-/* Custom scrollbar - minimal and neat */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.notion-numbered-item {
+  @apply mb-2 ml-6 text-foreground;
+  list-style-type: decimal;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.notion-code-block {
+  @apply bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4 border;
 }
 
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
+.notion-code-block code {
+  @apply text-sm font-mono text-foreground;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+.notion-inline-code {
+  @apply bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono text-primary;
 }
 
-::-webkit-scrollbar-corner {
-  background: transparent;
+.notion-quote {
+  @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-700 dark:text-gray-300 my-4 bg-gray-50 dark:bg-gray-800 py-3 rounded-r;
 }
 
-/* Firefox scrollbar styling */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+.notion-callout {
+  @apply flex items-start gap-3 p-4 rounded-lg border bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 my-4;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+.notion-callout-icon {
+  @apply text-lg flex-shrink-0 mt-0.5;
 }
 
-/* Prose customizations */
-.prose img {
-  border-radius: 0.5rem;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+.notion-callout-content {
+  @apply flex-1 text-blue-900 dark:text-blue-100;
 }
 
-/* Add a nice loading animation for images */
-@keyframes imageLoading {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 100% 100%;
-  }
+.notion-divider {
+  @apply border-gray-300 dark:border-gray-600 my-8;
 }
 
-.prose img:not([src*="placeholder.svg"]) {
-  background: linear-gradient(
-    45deg,
-    rgba(var(--muted), 0.1) 25%,
-    rgba(var(--muted), 0.2) 50%,
-    rgba(var(--muted), 0.1) 75%
-  );
-  background-size: 200% 200%;
-  animation: imageLoading 1.5s ease infinite;
+.notion-image {
+  @apply my-8;
 }
 
-.prose img[src*="placeholder.svg"] {
-  border: 1px dashed hsl(var(--muted));
-  padding: 1rem;
+.notion-image-content {
+  @apply rounded-lg shadow-lg w-full h-auto;
+}
+
+.notion-image-caption {
+  @apply text-sm text-gray-600 dark:text-gray-400 text-center mt-2 italic;
+}
+
+.notion-video {
+  @apply my-8;
+}
+
+.notion-video-content {
+  @apply rounded-lg w-full h-auto;
+}
+
+.notion-embed {
+  @apply my-8;
+}
+
+.notion-embed-content {
+  @apply w-full h-96 rounded-lg;
+}
+
+.notion-bookmark {
+  @apply border rounded-lg p-4 mb-4 hover:bg-muted/50 transition-colors;
+}
+
+.notion-bookmark-link {
+  @apply no-underline text-foreground;
+}
+
+.notion-bookmark-title {
+  @apply font-medium text-foreground mb-2;
+}
+
+.notion-bookmark-url {
+  @apply text-sm text-muted-foreground;
+}
+
+.notion-file {
+  @apply border rounded-lg p-4 mb-4 hover:bg-muted/50 transition-colors;
+}
+
+.notion-file-link {
+  @apply flex items-center gap-3 no-underline text-foreground;
+}
+
+.notion-file-icon {
+  @apply text-2xl;
+}
+
+.notion-file-info {
+  @apply flex-1;
+}
+
+.notion-file-name {
+  @apply font-medium text-foreground;
+}
+
+.notion-file-size {
+  @apply text-sm text-muted-foreground;
+}
+
+.notion-audio {
+  @apply my-8;
+}
+
+.notion-audio-content {
+  @apply w-full;
+}
+
+.notion-table-wrapper {
+  @apply overflow-x-auto my-8;
+}
+
+.notion-table {
+  @apply w-full border-collapse border border-gray-300 dark:border-gray-600;
+}
+
+.notion-table-header {
+  @apply border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 px-4 py-2 font-semibold text-left;
+}
+
+.notion-table-cell {
+  @apply border border-gray-300 dark:border-gray-600 px-4 py-2;
+}
+
+.notion-table-row:nth-child(even) {
+  @apply bg-gray-50 dark:bg-gray-900;
+}
+
+.notion-toggle {
+  @apply border rounded-lg p-4 mb-4;
+}
+
+.notion-toggle-summary {
+  @apply font-medium cursor-pointer hover:text-primary;
+}
+
+.notion-toggle[open] .notion-toggle-summary {
+  @apply mb-2;
+}
+
+.notion-toggle-content {
+  @apply mt-2 pl-4;
+}
+
+.notion-link {
+  @apply text-primary hover:text-primary/80 underline underline-offset-4;
+}
+
+/* Enhanced prose styling - Fix heading colors */
+.prose {
+  @apply max-w-none;
+}
+
+.prose h1 {
+  @apply text-foreground font-bold;
+}
+
+.prose h2 {
+  @apply text-foreground font-semibold;
+}
+
+.prose h3 {
+  @apply text-foreground font-medium;
+}
+
+.prose h4 {
+  @apply text-foreground font-medium;
+}
+
+.prose h5 {
+  @apply text-foreground font-medium;
+}
+
+.prose h6 {
+  @apply text-foreground font-medium;
 }
 
 .prose a {
-  color: hsl(var(--primary));
-  transition: color 0.2s ease;
-}
-
-.prose a:hover {
-  color: hsl(var(--primary) / 0.8);
+  @apply text-primary hover:text-primary/80;
 }
 
 .prose code {
-  border-radius: 0.25rem;
-  background-color: hsl(var(--muted));
-  padding: 0.125rem 0.25rem;
-  font-family: monospace;
-  font-size: 0.875rem;
-}
-
-.prose pre {
-  border-radius: 0.5rem;
-  border: 1px solid hsl(var(--border));
-  background-color: hsl(var(--muted));
-  padding: 1rem;
-  overflow-x: auto;
+  @apply text-primary bg-muted;
 }
 
 .prose blockquote {
-  border-left: 4px solid hsl(var(--primary) / 0.2);
-  padding-left: 1rem;
+  @apply border-primary text-muted-foreground;
+}
+
+/* List improvements for Notion content */
+ul.notion-list {
+  @apply list-disc list-inside space-y-1 my-4;
+}
+
+ol.notion-list {
+  @apply list-decimal list-inside space-y-1 my-4;
+}
+
+/* Quote styling */
+blockquote {
+  @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-700 dark:text-gray-300 my-4;
+}
+
+/* Divider styling */
+hr {
+  @apply border-gray-300 dark:border-gray-600 my-8;
+}
+
+/* Prism.js Syntax Highlighting Styles */
+/* Base theme - works for both light and dark modes */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #f8f8f2;
+  background: none;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+  font-family: "Fira Code", "JetBrains Mono", "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New",
+    monospace;
+  font-size: 0.875rem;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow: auto;
+  border-radius: 0.5rem;
+  background: #282a36;
+  border: 1px solid #44475a;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  background: #44475a;
+  color: #f8f8f2;
+  white-space: normal;
+}
+
+/* Light mode adjustments */
+@media (prefers-color-scheme: light) {
+  code[class*="language-"],
+  pre[class*="language-"] {
+    color: #383a42;
+    text-shadow: none;
+  }
+
+  pre[class*="language-"] {
+    background: #fafafa;
+    border: 1px solid #e1e4e8;
+  }
+
+  :not(pre) > code[class*="language-"] {
+    background: #f6f8fa;
+    color: #24292e;
+  }
+}
+
+/* Dark mode explicit */
+.dark code[class*="language-"],
+.dark pre[class*="language-"] {
+  color: #f8f8f2;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.dark pre[class*="language-"] {
+  background: #282a36;
+  border: 1px solid #44475a;
+}
+
+.dark :not(pre) > code[class*="language-"] {
+  background: #44475a;
+  color: #f8f8f2;
+}
+
+/* Syntax highlighting colors */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6272a4;
   font-style: italic;
 }
 
-/* Syntax Highlighting Custom Styles */
-.prose pre {
-  background-color: #282a36;
-  color: #f8f8f2;
-  overflow-x: auto;
-  border-radius: 0.5rem;
-  padding: 1rem;
-}
-
-.prose pre code {
-  background-color: transparent;
-  padding: 0;
-  color: #f8f8f2;
-  text-shadow: none;
-  font-family: "Fira Code", Consolas, Monaco, monospace;
-}
-
-/* Language-specific colors */
-.prose code[class*="language-"] {
+.token.punctuation {
   color: #f8f8f2;
 }
 
-.prose .token.comment,
-.prose .token.prolog,
-.prose .token.doctype,
-.prose .token.cdata {
-  color: #6272a4;
+.token.namespace {
+  opacity: 0.7;
 }
 
-.prose .token.punctuation {
-  color: #f8f8f2;
-}
-
-.prose .token.property,
-.prose .token.tag,
-.prose .token.constant,
-.prose .token.symbol,
-.prose .token.deleted {
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
   color: #ff79c6;
 }
 
-.prose .token.boolean,
-.prose .token.number {
+.token.boolean,
+.token.number {
   color: #bd93f9;
 }
 
-.prose .token.selector,
-.prose .token.attr-name,
-.prose .token.string,
-.prose .token.char,
-.prose .token.builtin,
-.prose .token.inserted {
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
   color: #50fa7b;
 }
 
-.prose .token.operator,
-.prose .token.entity,
-.prose .token.url,
-.prose .language-css .token.string,
-.prose .style .token.string,
-.prose .token.variable {
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
   color: #f8f8f2;
 }
 
-.prose .token.atrule,
-.prose .token.attr-value,
-.prose .token.function,
-.prose .token.class-name {
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
   color: #f1fa8c;
 }
 
-.prose .token.keyword {
+.token.keyword {
   color: #8be9fd;
-}
-
-.prose .token.regex,
-.prose .token.important {
-  color: #ffb86c;
-}
-
-.prose .token.important,
-.prose .token.bold {
   font-weight: bold;
 }
 
-.prose .token.italic {
+.token.regex,
+.token.important {
+  color: #ffb86c;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
   font-style: italic;
 }
 
-.prose .token.entity {
+.token.entity {
   cursor: help;
 }
 
-/* Line Numbers */
-.prose pre.line-numbers {
+/* Light mode syntax colors */
+@media (prefers-color-scheme: light) {
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: #708090;
+  }
+
+  .token.property,
+  .token.tag,
+  .token.constant,
+  .token.symbol,
+  .token.deleted {
+    color: #d73a49;
+  }
+
+  .token.boolean,
+  .token.number {
+    color: #005cc5;
+  }
+
+  .token.selector,
+  .token.attr-name,
+  .token.string,
+  .token.char,
+  .token.builtin,
+  .token.inserted {
+    color: #032f62;
+  }
+
+  .token.operator,
+  .token.entity,
+  .token.url,
+  .language-css .token.string,
+  .style .token.string,
+  .token.variable {
+    color: #24292e;
+  }
+
+  .token.atrule,
+  .token.attr-value,
+  .token.function,
+  .token.class-name {
+    color: #6f42c1;
+  }
+
+  .token.keyword {
+    color: #d73a49;
+  }
+
+  .token.regex,
+  .token.important {
+    color: #e36209;
+  }
+}
+
+/* Dark mode explicit syntax colors */
+.dark .token.comment,
+.dark .token.prolog,
+.dark .token.doctype,
+.dark .token.cdata {
+  color: #6272a4;
+}
+
+.dark .token.property,
+.dark .token.tag,
+.dark .token.constant,
+.dark .token.symbol,
+.dark .token.deleted {
+  color: #ff79c6;
+}
+
+.dark .token.boolean,
+.dark .token.number {
+  color: #bd93f9;
+}
+
+.dark .token.selector,
+.dark .token.attr-name,
+.dark .token.string,
+.dark .token.char,
+.dark .token.builtin,
+.dark .token.inserted {
+  color: #50fa7b;
+}
+
+.dark .token.operator,
+.dark .token.entity,
+.dark .token.url,
+.dark .language-css .token.string,
+.dark .style .token.string,
+.dark .token.variable {
+  color: #f8f8f2;
+}
+
+.dark .token.atrule,
+.dark .token.attr-value,
+.dark .token.function,
+.dark .token.class-name {
+  color: #f1fa8c;
+}
+
+.dark .token.keyword {
+  color: #8be9fd;
+}
+
+.dark .token.regex,
+.dark .token.important {
+  color: #ffb86c;
+}
+
+/* PHP-specific syntax highlighting */
+.token.php {
+  color: #8be9fd;
+}
+
+.token.php-tag {
+  color: #ff79c6;
+  font-weight: bold;
+}
+
+.token.variable {
+  color: #f8f8f2;
+}
+
+.token.function-name {
+  color: #50fa7b;
+}
+
+.token.class-name-definition {
+  color: #8be9fd;
+}
+
+/* Light mode PHP colors */
+@media (prefers-color-scheme: light) {
+  .token.php {
+    color: #d73a49;
+  }
+
+  .token.php-tag {
+    color: #d73a49;
+    font-weight: bold;
+  }
+
+  .token.variable {
+    color: #e36209;
+  }
+
+  .token.function-name {
+    color: #6f42c1;
+  }
+
+  .token.class-name-definition {
+    color: #005cc5;
+  }
+}
+
+/* Dark mode explicit PHP colors */
+.dark .token.php {
+  color: #8be9fd;
+}
+
+.dark .token.php-tag {
+  color: #ff79c6;
+  font-weight: bold;
+}
+
+.dark .token.variable {
+  color: #f8f8f2;
+}
+
+.dark .token.function-name {
+  color: #50fa7b;
+}
+
+.dark .token.class-name-definition {
+  color: #8be9fd;
+}
+
+/* Line numbers support */
+pre.line-numbers {
   position: relative;
   padding-left: 3.8em;
   counter-reset: linenumber;
 }
 
-.prose pre.line-numbers > code {
+pre.line-numbers > code {
   position: relative;
+  white-space: inherit;
 }
 
-.prose .line-numbers-rows {
+.line-numbers .line-numbers-rows {
   position: absolute;
   pointer-events: none;
   top: 0;
-  font-size: 100%;
   left: -3.8em;
-  width: 3em; /* works for line-numbers below 1000 lines */
+  width: 3em;
   letter-spacing: -1px;
-  border-right: 1px solid #999;
+  border-right: 1px solid #44475a;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
 
-.prose .line-numbers-rows > span {
+.line-numbers-rows > span {
   display: block;
   counter-increment: linenumber;
 }
 
-.prose .line-numbers-rows > span:before {
+.line-numbers-rows > span:before {
   content: counter(linenumber);
-  color: #999;
+  color: #6272a4;
   display: block;
   padding-right: 0.8em;
   text-align: right;
 }
 
-/* Gaming UI Components */
-.game-card {
-  background: rgba(var(--game-card-background));
-  border: 2px solid rgba(100, 149, 237, 0.3);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+/* Copy button styling */
+.copy-button {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-/* Health Bar */
-.health-bar {
-  width: 100%;
+pre:hover .copy-button {
+  opacity: 1;
+}
+
+/* Enhanced notion code block styling */
+.notion-code-block {
+  @apply relative;
+  background: #282a36 !important;
+  border: 1px solid #44475a !important;
+  border-radius: 0.5rem !important;
+  overflow-x: auto !important;
+  margin: 1.5rem 0 !important;
+  padding: 1rem !important;
+}
+
+.dark .notion-code-block {
+  background: #282a36 !important;
+  border-color: #44475a !important;
+}
+
+@media (prefers-color-scheme: light) {
+  .notion-code-block {
+    background: #fafafa !important;
+    border-color: #e1e4e8 !important;
+  }
+}
+
+.notion-code-block code {
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+/* Language label for code blocks */
+.notion-code-block::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.5rem;
+  right: 3rem;
+  font-size: 0.75rem;
+  color: #6272a4;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* Scrollbar styling for code blocks */
+.notion-code-block::-webkit-scrollbar {
   height: 8px;
-  background: rgba(0, 0, 0, 0.4);
+}
+
+.notion-code-block::-webkit-scrollbar-track {
+  background: #44475a;
   border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.health-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #ff4444, #ff6666);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-  box-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+.notion-code-block::-webkit-scrollbar-thumb {
+  background: #6272a4;
+  border-radius: 4px;
 }
 
-/* MP (Mana) Bar */
-.mp-bar {
-  width: 100%;
+.notion-code-block::-webkit-scrollbar-thumb:hover {
+  background: #8be9fd;
+}
+
+/* Table of Contents Scroll Styling */
+.toc-scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) hsl(var(--background));
+}
+
+.toc-scroll-area::-webkit-scrollbar {
+  width: 8px;
   height: 8px;
-  background: rgba(0, 0, 0, 0.4);
+}
+
+.toc-scroll-area::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
   border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 4px 0;
 }
 
-.mp-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #4488ff, #66aaff);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-  box-shadow: 0 0 8px rgba(68, 136, 255, 0.5);
-}
-
-/* XP Bar */
-.xp-bar {
-  width: 100%;
-  height: 8px;
-  background: rgba(0, 0, 0, 0.4);
+.toc-scroll-area::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
   border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid hsl(var(--background));
+  transition: all 0.2s ease;
 }
 
-.xp-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #ffaa00, #ffcc44);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-  box-shadow: 0 0 8px rgba(255, 170, 0, 0.5);
+.toc-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground) / 0.4);
+  transform: scaleY(1.1);
 }
 
-/* Achievement Badges */
-.achievement-badge {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.toc-scroll-area::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--primary));
 }
 
-.achievement-badge:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.5);
+.toc-scroll-area::-webkit-scrollbar-corner {
+  background: hsl(var(--background));
+}
+
+/* Custom scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  right: 2px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--primary) / 0.1) 0%,
+    hsl(var(--primary) / 0.3) 50%,
+    hsl(var(--primary) / 0.1) 100%
+  );
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.toc-scroll-area:hover .scroll-indicator {
+  opacity: 1;
+}
+
+/* Enhanced scrollbar for floating mode */
+.floating-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.floating-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, hsl(var(--primary) / 0.6), hsl(var(--primary) / 0.8));
+  box-shadow: 0 2px 4px hsl(var(--foreground) / 0.1);
+}
+
+.floating-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, hsl(var(--primary) / 0.8), hsl(var(--primary)));
+  box-shadow: 0 4px 8px hsl(var(--foreground) / 0.2);
+}
+
+/* Scrolling state animation */
+.toc-scroll-area.scrolling::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.8);
+}
+
+.toc-scroll-area.scrolling .scroll-indicator {
+  opacity: 1;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--primary) / 0.3) 0%,
+    hsl(var(--primary) / 0.6) 50%,
+    hsl(var(--primary) / 0.3) 100%
+  );
 }

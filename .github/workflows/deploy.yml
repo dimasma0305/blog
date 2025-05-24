@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  schedule:
+    # Run every 30 minutes
+    - cron: '*/30 * * * *'
 
 # Allow one concurrent deployment
 concurrency:
@@ -35,10 +38,18 @@ jobs:
       run: |
         npm install --legacy-peer-deps
 
+    - name: Refresh content and check for updates
+      run: |
+        echo "🔄 Refreshing content..."
+        # Check for any content updates or regenerate dynamic content
+        npm run refresh-content || echo "⚠️ Content refresh script not found, skipping..."
+        echo "✅ Content refresh completed"
+
     - name: Generate SEO files
       run: |
         npm run generate-index
         npm run generate-sitemap
+        npm run generate-robots
         echo "✅ SEO files generated successfully"
 
     - name: Build application

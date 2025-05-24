@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const fs = require('fs')
 const path = require('path')
 const { generateIndex } = require('./generate-index')
@@ -87,4 +85,4 @@ if (require.main === module) {
   watchPosts()
 }
 
-module.exports = { watchPosts } 
+module.exports = { watchPosts }

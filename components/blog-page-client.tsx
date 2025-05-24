@@ -21,34 +21,33 @@ const ErrorDisplay = memo(({ error, onRetry }: { error: string; onRetry: () => v
   </div>
 ))
 
-ErrorDisplay.displayName = 'ErrorDisplay'
+ErrorDisplay.displayName = "ErrorDisplay"
 
 // Memoized search results display
-const SearchResults = memo(({ 
-  query, 
-  resultCount, 
-  totalCount, 
-  onClear 
-}: { 
-  query: string
-  resultCount: number
-  totalCount: number
-  onClear: () => void 
-}) => (
-  <div className="mb-6 flex items-center gap-2">
-    <p className="text-sm text-muted-foreground">
-      {resultCount} result{resultCount !== 1 ? 's' : ''} for "{query}"
-    </p>
-    <button 
-      onClick={onClear}
-      className="text-sm text-primary hover:underline"
-    >
-      Clear search
-    </button>
-  </div>
-))
+const SearchResults = memo(
+  ({
+    query,
+    resultCount,
+    totalCount,
+    onClear,
+  }: {
+    query: string
+    resultCount: number
+    totalCount: number
+    onClear: () => void
+  }) => (
+    <div className="mb-6 flex items-center gap-2">
+      <p className="text-sm text-muted-foreground">
+        {resultCount} result{resultCount !== 1 ? "s" : ""} for "{query}"
+      </p>
+      <button onClick={onClear} className="text-sm text-primary hover:underline">
+        Clear search
+      </button>
+    </div>
+  ),
+)
 
-SearchResults.displayName = 'SearchResults'
+SearchResults.displayName = "SearchResults"
 
 // Memoized posts grid with virtual scrolling for large lists
 const PostsGrid = memo(({ posts }: { posts: Post[] }) => {
@@ -62,10 +61,10 @@ const PostsGrid = memo(({ posts }: { posts: Post[] }) => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && visiblePosts < posts.length) {
-          setVisiblePosts(prev => Math.min(prev + 6, posts.length))
+          setVisiblePosts((prev) => Math.min(prev + 6, posts.length))
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     )
 
     observer.observe(loadMoreRef.current)
@@ -97,33 +96,35 @@ const PostsGrid = memo(({ posts }: { posts: Post[] }) => {
   )
 })
 
-PostsGrid.displayName = 'PostsGrid'
+PostsGrid.displayName = "PostsGrid"
 
 // Memoized empty states
-const EmptyState = memo(({ searchQuery, onClearSearch }: { 
-  searchQuery: string
-  onClearSearch?: () => void 
-}) => (
-  <div className="text-center py-12">
-    {searchQuery ? (
-      <>
-        <p className="text-muted-foreground">No posts found matching "{searchQuery}".</p>
-        {onClearSearch && (
-          <button 
-            onClick={onClearSearch}
-            className="mt-2 text-primary hover:underline"
-          >
-            Clear search to see all posts
-          </button>
-        )}
-      </>
-    ) : (
-      <p className="text-muted-foreground">No posts found. Add markdown files to the /posts directory.</p>
-    )}
-  </div>
-))
+const EmptyState = memo(
+  ({
+    searchQuery,
+    onClearSearch,
+  }: {
+    searchQuery: string
+    onClearSearch?: () => void
+  }) => (
+    <div className="text-center py-12">
+      {searchQuery ? (
+        <>
+          <p className="text-muted-foreground">No posts found matching "{searchQuery}".</p>
+          {onClearSearch && (
+            <button onClick={onClearSearch} className="mt-2 text-primary hover:underline">
+              Clear search to see all posts
+            </button>
+          )}
+        </>
+      ) : (
+        <p className="text-muted-foreground">No posts found. Add markdown files to the /posts directory.</p>
+      )}
+    </div>
+  ),
+)
 
-EmptyState.displayName = 'EmptyState'
+EmptyState.displayName = "EmptyState"
 
 // Memoized sidebar
 const Sidebar = memo(({ posts }: { posts: Post[] }) => (
@@ -133,10 +134,11 @@ const Sidebar = memo(({ posts }: { posts: Post[] }) => (
   </div>
 ))
 
-Sidebar.displayName = 'Sidebar'
+Sidebar.displayName = "Sidebar"
 
 function BlogPageClient() {
   const { posts, loading, refreshing, error, refresh } = usePosts()
+  console.log("Posts from usePosts:", posts.length, posts.slice(0, 2))
   const [searchQuery, setSearchQuery] = useState("")
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -147,7 +149,7 @@ function BlogPageClient() {
     }
 
     const query = searchQuery.toLowerCase().trim()
-    
+
     // Early exit for empty query
     if (!query) return posts
 
@@ -156,7 +158,7 @@ function BlogPageClient() {
       return (
         post.title.toLowerCase().includes(query) ||
         post.excerpt.toLowerCase().includes(query) ||
-        post.categories.some(cat => cat.toLowerCase().includes(query)) ||
+        post.categories.some((cat) => cat.toLowerCase().includes(query)) ||
         (post.content && post.content.toLowerCase().includes(query))
       )
     })
@@ -167,7 +169,7 @@ function BlogPageClient() {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current)
     }
-    
+
     searchTimeoutRef.current = setTimeout(() => {
       setSearchQuery(query)
     }, 150) // Reduced debounce for better responsiveness
@@ -201,7 +203,7 @@ function BlogPageClient() {
             disabled={refreshing}
             className="flex items-center gap-2"
           >
-            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
             Refresh
           </Button>
         </div>
@@ -232,11 +234,11 @@ function BlogPageClient() {
             <EmptyState searchQuery={searchQuery} onClearSearch={handleClearSearch} />
           )}
         </div>
-        
-        <Sidebar posts={filteredPosts} />
+
+        <Sidebar posts={posts} />
       </div>
     </div>
   )
 }
 
-export default memo(BlogPageClient) 
+export default memo(BlogPageClient)

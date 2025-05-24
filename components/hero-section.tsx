@@ -371,8 +371,11 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
                           <span className="text-xs">HP</span>
                           <span className="text-xs">420/420</span>
                         </div>
-                        <div className="health-bar">
-                          <div className="health-bar-fill" style={{ width: "100%" }}></div>
+                        <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-red-500 to-red-400 transition-all duration-300" 
+                            style={{ width: "100%" }}
+                          ></div>
                         </div>
                       </div>
 
@@ -381,8 +384,11 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
                           <span className="text-xs">MP</span>
                           <span className="text-xs">340/340</span>
                         </div>
-                        <div className="mp-bar">
-                          <div className="mp-bar-fill" style={{ width: "100%" }}></div>
+                        <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-300" 
+                            style={{ width: "100%" }}
+                          ></div>
                         </div>
                       </div>
 
@@ -391,8 +397,11 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
                           <span className="text-xs">XP</span>
                           <span className="text-xs">8,742 / 10,000</span>
                         </div>
-                        <div className="xp-bar">
-                          <div className="xp-bar-fill" style={{ width: "87%" }}></div>
+                        <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-yellow-500 to-yellow-400 transition-all duration-300" 
+                            style={{ width: "87%" }}
+                          ></div>
                         </div>
                       </div>
 

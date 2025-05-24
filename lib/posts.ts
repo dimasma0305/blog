@@ -1,28 +1,7 @@
 import fs from "fs"
 import path from "path"
-import matter from "gray-matter"
-import { remark } from "remark"
-import remarkGfm from "remark-gfm"
-import rehypeSlug from "rehype-slug"
-import rehypeAutolinkHeadings from "rehype-autolink-headings"
-import remarkRehype from "remark-rehype"
-import rehypeStringify from "rehype-stringify"
-import rehypePrism from "rehype-prism-plus"
-import { withBasePath } from "./utils"
 
-const postsDirectory = path.join(process.cwd(), "posts")
-
-export type PostOwner = {
-  id: string
-  name: string
-  avatar_url: string
-  type: string
-  person?: {
-    email: string
-  }
-}
-
-export type Post = {
+export interface Post {
   id: string
   slug: string
   title: string
@@ -31,186 +10,291 @@ export type Post = {
   createdAt: string
   updatedAt: string
   coverImage: string
-  iconEmoji?: string
+  iconEmoji: string
   categories: string[]
   verification: {
     state: string
-    verified_by: string | null
-    date: string | null
+    verified_by: string
+    date: string
   }
-  owner?: PostOwner
-}
-
-// Modify the processImagePaths function to be more robust
-function processImagePaths(content: string, slug: string): string {
-  // Debug the content to see what we're working with
-  console.log(`Processing content for slug: ${slug}`)
-
-  // First, handle the standard pattern with ./imgs/
-  let processedContent = content.replace(
-    /<img([^>]*)src="\.\/imgs\/([^"]*)"([^>]*)>/g,
-    (match, before, imgPath, after) => {
-      console.log(`Found image path: ./imgs/${imgPath}`)
-      const fullPath = withBasePath(`/posts/${slug}/imgs/${imgPath}`)
-      return `<img${before}src="${fullPath}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
-    },
-  )
-
-  // Then handle any remaining relative image paths that might not follow the exact ./imgs/ pattern
-  processedContent = processedContent.replace(
-    /<img([^>]*)src="(?!http|\/|data:)([^"]*)"([^>]*)>/g,
-    (match, before, path, after) => {
-      console.log(`Found relative image path: ${path}`)
-      // If the path doesn't already start with /posts/${slug}/
-      if (!path.startsWith(`/posts/${slug}/`)) {
-        const fullPath = withBasePath(`/posts/${slug}/${path}`)
-        return `<img${before}src="${fullPath}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
-      }
-      return match
-    },
-  )
-
-  // Handle absolute paths that might be missing
-  processedContent = processedContent.replace(
-    /<img([^>]*)src="\/posts\/([^"]*)"([^>]*)>/g,
-    (match, before, path, after) => {
-      console.log(`Found absolute image path: /posts/${path}`)
-      const fullPath = withBasePath(`/posts/${path}`)
-      return `<img${before}src="${fullPath}"${after} class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found';">`
-    },
-  )
-
-  // Also handle markdown image syntax
-  processedContent = processedContent.replace(/!\[(.*?)\]$$(\.\/imgs\/[^)]+)$$/g, (match, alt, path) => {
-    const imgPath = path.replace("./imgs/", "")
-    console.log(`Found markdown image path: ${path}`)
-    const fullPath = withBasePath(`/posts/${slug}/imgs/${imgPath}`)
-    return `![${alt}](${fullPath})`
-  })
-
-  return processedContent
+  owner?: {
+    id: string
+    name: string
+    avatar_url: string
+    type: string
+  }
 }
 
 export async function getAllPosts(): Promise<Post[]> {
-  // Check if posts directory exists
-  if (!fs.existsSync(postsDirectory)) {
-    console.log("Posts directory does not exist. Creating directory...")
-    // Create the posts directory
-    fs.mkdirSync(postsDirectory, { recursive: true })
-    return []
-  }
+  try {
+    // Read the blog index
+    const indexPath = path.join(process.cwd(), "public", "blog-index.json")
 
-  // Get all folder names in the posts directory
-  const folderNames = fs.readdirSync(postsDirectory)
+    if (!fs.existsSync(indexPath)) {
+      console.log("Blog index does not exist.")
+      return []
+    }
 
-  // If no posts are found, return an empty array
-  if (folderNames.length === 0) {
-    console.log("No posts found in the posts directory.")
-    return []
-  }
+    const indexContent = fs.readFileSync(indexPath, "utf8")
+    const blogIndex = JSON.parse(indexContent)
 
-  const allPosts = await Promise.all(
-    folderNames.map(async (folder) => {
-      const readmePath = path.join(postsDirectory, folder, "README.md")
+    // Get published posts from the index
+    const publishedPosts = blogIndex.posts?.published || []
 
-      // Skip if README.md doesn't exist
-      if (!fs.existsSync(readmePath)) {
-        console.log(`No README.md found in ${folder}`)
-        return null
+    if (publishedPosts.length === 0) {
+      console.log("No published posts found in the blog index.")
+      return []
+    }
+
+    // Convert index posts to our Post format
+    const allPosts = publishedPosts.map((indexPost: any) => {
+      const post: Post = {
+        id: indexPost.id,
+        slug: indexPost.slug,
+        title: indexPost.title,
+        excerpt: indexPost.excerpt || "",
+        content: "", // Will be loaded on demand
+        createdAt: indexPost.created_time,
+        updatedAt: indexPost.last_edited_time,
+        coverImage: indexPost.featured_image || "",
+        iconEmoji: "",
+        categories: indexPost.properties?.tags || [],
+        verification: {
+          state: "verified",
+          verified_by: "notion",
+          date: indexPost.last_edited_time,
+        },
+        owner: indexPost.properties?.author
+          ? {
+              id: "author",
+              name: indexPost.properties.author,
+              avatar_url: "",
+              type: "person",
+            }
+          : undefined,
       }
-
-      const post = await getPostBySlug(folder)
       return post
-    }),
-  )
+    })
 
-  // Filter out null values and sort by date
-  return allPosts
-    .filter((post): post is Post => post !== null)
-    .sort((a, b) => (new Date(b.createdAt) > new Date(a.createdAt) ? 1 : -1))
+    // Sort by date
+    return allPosts.sort((a, b) => (new Date(b.createdAt) > new Date(a.createdAt) ? 1 : -1))
+  } catch (error) {
+    console.error("Error reading blog index:", error)
+    return []
+  }
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  const readmePath = path.join(postsDirectory, slug, "README.md")
+  try {
+    // First get the post info from the index
+    const indexPath = path.join(process.cwd(), "public", "blog-index.json")
 
-  // Return null if README.md doesn't exist
-  if (!fs.existsSync(readmePath)) {
-    console.log(`README.md does not exist for slug: ${slug}`)
+    if (!fs.existsSync(indexPath)) {
+      console.log("Blog index does not exist.")
+      return null
+    }
+
+    const indexContent = fs.readFileSync(indexPath, "utf8")
+    const blogIndex = JSON.parse(indexContent)
+
+    // Find the post in the index
+    const indexPost = blogIndex.posts?.published?.find((p: any) => p.slug === slug)
+    if (!indexPost) {
+      console.log(`Post with slug ${slug} not found in index`)
+      return null
+    }
+
+    // Read the individual post.json file
+    const postJsonPath = path.join(process.cwd(), "public", "posts", indexPost.folder, "post.json")
+
+    if (!fs.existsSync(postJsonPath)) {
+      console.log(`Post JSON file does not exist for slug: ${slug}`)
+      return null
+    }
+
+    const postContent = fs.readFileSync(postJsonPath, "utf8")
+    const postData = JSON.parse(postContent)
+    const notionPost = postData.post
+
+    // Convert Notion content to HTML
+    const processedHtml = convertNotionContentToHtmlServer(notionPost.content || [], indexPost.folder)
+
+    // Extract excerpt if not available
+    let excerpt = indexPost.excerpt
+    if (!excerpt && notionPost.content) {
+      excerpt = extractExcerptFromNotionContentServer(notionPost.content)
+    }
+
+    // Process cover image
+    let coverImage = ""
+    if (notionPost.cover) {
+      if (notionPost.cover.type === "external") {
+        coverImage = notionPost.cover.external.url
+      } else if (notionPost.cover.type === "file") {
+        coverImage = notionPost.cover.file.url
+      }
+    } else if (notionPost.properties?.featured_image) {
+      const featuredImg = notionPost.properties.featured_image
+      coverImage = Array.isArray(featuredImg) ? featuredImg[0]?.url || "" : featuredImg
+    }
+
+    // Create post object
+    const post: Post = {
+      id: notionPost.id,
+      slug: indexPost.slug,
+      title: notionPost.title || notionPost.properties?.title || "Untitled",
+      excerpt,
+      content: processedHtml,
+      createdAt: notionPost.created_time,
+      updatedAt: notionPost.last_edited_time,
+      coverImage,
+      iconEmoji: notionPost.icon?.emoji || "",
+      categories: notionPost.properties?.tags || [],
+      verification: {
+        state: "verified",
+        verified_by: "notion",
+        date: notionPost.last_edited_time,
+      },
+      owner: notionPost.properties?.author
+        ? {
+            id: "author",
+            name: notionPost.properties.author,
+            avatar_url: "",
+            type: "person",
+          }
+        : undefined,
+    }
+
+    return post
+  } catch (error) {
+    console.error(`Error processing post ${slug}:`, error)
     return null
   }
-
-  // Read the README.md file
-  const fileContents = fs.readFileSync(readmePath, "utf8")
-
-  // Parse the frontmatter
-  const { data, content } = matter(fileContents)
-
-  // Process the markdown content with syntax highlighting
-  const processedContent = await remark()
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeSlug)
-    .use(rehypeAutolinkHeadings)
-    .use(rehypePrism, { showLineNumbers: true }) // Add syntax highlighting
-    .use(rehypeStringify, { allowDangerousHtml: true })
-    .process(content)
-
-  const contentHtml = processedContent.toString()
-
-  // Process image paths in the HTML content
-  const processedHtml = processImagePaths(contentHtml, slug)
-
-  // Extract the first paragraph as excerpt
-  const excerpt = content
-    .split("\n\n")[0]
-    .replace(/^#+\s+/, "")
-    .trim()
-
-  // Process cover image path
-  let coverImage = data.cover_image || ""
-  if (coverImage && coverImage.startsWith("./")) {
-    coverImage = withBasePath(coverImage.replace("./", `/posts/${slug}/`))
-  } else if (coverImage && !coverImage.startsWith("http") && !coverImage.startsWith("/")) {
-    coverImage = withBasePath(`/posts/${slug}/${coverImage}`)
-  } else if (coverImage && coverImage.startsWith("/") && !coverImage.startsWith("http")) {
-    coverImage = withBasePath(coverImage)
-  }
-
-  // Create post object
-  const post: Post = {
-    id: data.id || slug,
-    slug,
-    title: data.title || "Untitled",
-    excerpt,
-    content: processedHtml,
-    createdAt: data.created_time || new Date().toISOString(),
-    updatedAt: data.last_edited_time || new Date().toISOString(),
-    coverImage,
-    iconEmoji: data.icon_emoji || "",
-    categories: data.categories || [],
-    verification: data.verification || {
-      state: "unverified",
-      verified_by: null,
-      date: null,
-    },
-    owner: data.owner || undefined,
-  }
-
-  return post
 }
 
-export function getAllCategories(posts: Post[]): string[] {
-  const categories = new Set<string>()
+// Server-side helper functions
+function extractExcerptFromNotionContentServer(content: any[]): string {
+  if (!content || !Array.isArray(content)) return ""
 
-  posts.forEach((post) => {
-    post.categories.forEach((category) => {
-      categories.add(category)
-    })
-  })
-
-  return Array.from(categories)
+  for (const block of content) {
+    if (block.type === "paragraph" && block.content?.rich_text) {
+      const text = block.content.rich_text
+        .map((rt: any) => rt.content || "")
+        .join("")
+        .trim()
+      if (text) {
+        return text.length > 200 ? text.substring(0, 200) + "..." : text
+      }
+    }
+  }
+  return ""
 }
 
-export function getPostsByCategory(posts: Post[], category: string): Post[] {
-  return posts.filter((post) => post.categories.includes(category))
+function convertNotionContentToHtmlServer(content: any[], folder: string): string {
+  if (!content || !Array.isArray(content)) return ""
+
+  const htmlBlocks: string[] = []
+
+  for (const block of content) {
+    const html = convertNotionBlockToHtmlServer(block, folder)
+    if (html) {
+      htmlBlocks.push(html)
+    }
+  }
+
+  return htmlBlocks.join("\n")
+}
+
+function convertNotionBlockToHtmlServer(block: any, folder: string): string {
+  if (!block || !block.type) return ""
+
+  const processRichText = (richText: any[]) => {
+    if (!richText || !Array.isArray(richText)) return ""
+    return richText
+      .map((rt) => {
+        let text = rt.content || ""
+        if (rt.annotations?.bold) text = `<strong>${text}</strong>`
+        if (rt.annotations?.italic) text = `<em>${text}</em>`
+        if (rt.annotations?.strikethrough) text = `<del>${text}</del>`
+        if (rt.annotations?.underline) text = `<u>${text}</u>`
+        if (rt.annotations?.code) text = `<code>${text}</code>`
+        if (rt.href) text = `<a href="${rt.href}" target="_blank" rel="noopener noreferrer">${text}</a>`
+        return text
+      })
+      .join("")
+  }
+
+  switch (block.type) {
+    case "paragraph":
+      const pText = processRichText(block.content?.rich_text)
+      return pText ? `<p>${pText}</p>` : ""
+
+    case "heading_1":
+      const h1Text = processRichText(block.content?.rich_text)
+      return h1Text ? `<h1>${h1Text}</h1>` : ""
+
+    case "heading_2":
+      const h2Text = processRichText(block.content?.rich_text)
+      return h2Text ? `<h2>${h2Text}</h2>` : ""
+
+    case "heading_3":
+      const h3Text = processRichText(block.content?.rich_text)
+      return h3Text ? `<h3>${h3Text}</h3>` : ""
+
+    case "bulleted_list_item":
+      const liText = processRichText(block.content?.rich_text)
+      return liText ? `<li>${liText}</li>` : ""
+
+    case "numbered_list_item":
+      const numLiText = processRichText(block.content?.rich_text)
+      return numLiText ? `<li>${numLiText}</li>` : ""
+
+    case "code":
+      const codeText = processRichText(block.content?.rich_text)
+      const language = block.content?.language || ""
+      return codeText ? `<pre><code class="language-${language}">${codeText}</code></pre>` : ""
+
+    case "quote":
+      const quoteText = processRichText(block.content?.rich_text)
+      return quoteText ? `<blockquote>${quoteText}</blockquote>` : ""
+
+    case "callout":
+      const calloutText = processRichText(block.content?.rich_text)
+      const icon = block.content?.icon?.emoji || "💡"
+      return calloutText
+        ? `<div class="callout"><span class="callout-icon">${icon}</span><div class="callout-content">${calloutText}</div></div>`
+        : ""
+
+    case "divider":
+      return "<hr>"
+
+    case "image":
+      if (block.content?.url) {
+        const caption = processRichText(block.content?.caption || [])
+        const altText = caption || "Image"
+        return `<img src="${block.content.url}" alt="${altText}" class="rounded-lg my-8" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg?height=400&width=600&text=Image%20Not%20Found'">${caption ? `<figcaption>${caption}</figcaption>` : ""}`
+      }
+      return ""
+
+    case "video":
+      if (block.content?.url) {
+        return `<video controls class="rounded-lg my-8"><source src="${block.content.url}">Your browser does not support the video tag.</video>`
+      }
+      return ""
+
+    case "embed":
+      if (block.content?.url) {
+        return `<iframe src="${block.content.url}" class="w-full h-96 rounded-lg my-8" frameborder="0"></iframe>`
+      }
+      return ""
+
+    case "bookmark":
+      if (block.content?.url) {
+        return `<a href="${block.content.url}" target="_blank" rel="noopener noreferrer" class="bookmark-link">${block.content.url}</a>`
+      }
+      return ""
+
+    default:
+      return ""
+  }
 }

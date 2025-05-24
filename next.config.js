@@ -75,4 +75,4 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig

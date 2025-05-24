@@ -213,4 +213,4 @@ export function BlogStructuredData({ baseUrl = "https://dimasma0305.github.io/bl
       dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
     />
   )
-} 
+}

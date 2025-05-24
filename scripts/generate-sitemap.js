@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const fs = require('fs')
 const path = require('path')
 
@@ -102,4 +100,4 @@ if (require.main === module) {
   generateSitemap()
 }
 
-module.exports = { generateSitemap } 
+module.exports = { generateSitemap }

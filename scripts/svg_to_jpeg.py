@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-SVG to JPEG Converter with External Image Support
-Converts SVG files (including those with external image references) to high-quality JPEG images.
-"""
-
 import os
 import sys
 import requests
@@ -156,4 +150,4 @@ def main():
     svg_to_jpeg(input_svg, output_jpg, width, height, quality)
 
 if __name__ == "__main__":
-    main() 
+    main()

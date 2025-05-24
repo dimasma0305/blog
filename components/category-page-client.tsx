@@ -19,7 +19,13 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
   const [searchQuery, setSearchQuery] = useState("")
 
   const categories = getAllCategories(posts)
-  const categoryPosts = getPostsByCategory(posts, category)
+  
+  // Find the actual category name (case-insensitive)
+  const actualCategoryName = categories.find(cat => 
+    cat.toLowerCase() === category.toLowerCase()
+  ) || category
+  
+  const categoryPosts = getPostsByCategory(posts, actualCategoryName)
 
   // Filter category posts based on search query
   const filteredPosts = useMemo(() => {
@@ -37,8 +43,8 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
     })
   }, [categoryPosts, searchQuery])
 
-  // Check if category exists after posts are loaded
-  const categoryExists = categories.includes(category)
+  // Check if category exists after posts are loaded (case-insensitive)
+  const categoryExists = categories.some(cat => cat.toLowerCase() === category.toLowerCase())
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query)
@@ -96,17 +102,17 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Category: {category}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Category: {actualCategoryName}</h1>
         <SearchBar 
           onSearch={handleSearch} 
-          placeholder={`Search in ${category}...`}
+          placeholder={`Search in ${actualCategoryName}...`}
         />
       </div>
 
       {searchQuery && (
         <div className="mb-6 flex items-center gap-2">
           <p className="text-sm text-muted-foreground">
-            {filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''} for "{searchQuery}" in {category}
+            {filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''} for "{searchQuery}" in {actualCategoryName}
           </p>
           <button 
             onClick={handleClearSearch}
@@ -125,7 +131,7 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
         </div>
       ) : searchQuery ? (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No posts found matching "{searchQuery}" in {category}.</p>
+          <p className="text-muted-foreground">No posts found matching "{searchQuery}" in {actualCategoryName}.</p>
           <button 
             onClick={handleClearSearch}
             className="mt-2 text-primary hover:underline"
@@ -140,4 +146,4 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
       )}
     </div>
   )
-} 
+}

@@ -1,11 +1,9 @@
-#!/usr/bin/env node
-
 const fs = require('fs')
 const path = require('path')
 
 const POSTS_DIR = path.join(process.cwd(), 'public', 'posts')
 const ROBOTS_FILE = path.join(process.cwd(), 'public', 'robots.txt')
-const BASE_URL = 'https://dimasma0305.github.io/blog'
+const BASE_URL = process.env.BASE_URL
 
 function generateRobots() {
   console.log('🤖 Generating robots.txt...')
@@ -120,4 +118,4 @@ if (require.main === module) {
   generateRobots()
 }
 
-module.exports = { generateRobots } 
+module.exports = { generateRobots }
